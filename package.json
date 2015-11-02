@@ -1,0 +1,43 @@
+{
+  "name": "mutalyzer-sadi",
+  "version": "0.1.0",
+  "description": "a SADIfied Mutalyzer",
+  "main": "dist/server/server.js",
+  "scripts": {
+    "build-server": "webpack",
+    "build": "npm run build-server",
+    "prestart": "npm run build",
+    "start": "forever start -a -l forever.log -o out.log -e err.log ./dist/server/server.js",
+    "stop": "forever stop dist/server/server.js",
+    "prerestart": "npm run build",
+    "restart": "forever restart -a ./dist/server/server.js",
+    "test": "mocha dist/test/test.js"
+  },
+  "keywords": [
+    "mutalyzer",
+    "SADI"
+  ],
+  "authors": [
+    "Michiel Helvensteijn <mhelvens@gmail.com>"
+  ],
+  "dependencies": {
+    "co": "~4",
+    "commander": "~2",
+    "express": "~4",
+    "forever": "~0.15",
+    "lodash": "~3",
+    "soap": "^0.11.0",
+    "soap-as-promised": "^1.5.0"
+  },
+  "devDependencies": {
+    "babel": "~5",
+    "babel-core": "~5",
+    "babel-loader": "~5",
+    "chai": "~3",
+    "json-loader": "~0.5",
+    "mocha": "~2",
+    "supertest": "~1",
+    "supertest-as-promised": "~2",
+    "webpack": "~1"
+  }
+}
