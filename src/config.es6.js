@@ -20,8 +20,9 @@ commander
 let config = findConfig(commander.config);
 
 commander
-	.option('-h, --host [host]',  "the host through which this server is exposed",  config['host'] || 'localhost' )
-	.option('-p, --port [port]',  "the port to listen to",     a=>parseInt(a, 10),  config['port'] ||  8888       )
+	.option('-h, --host [host]',     "the host through which this server is exposed",  config['host'] || 'localhost' )
+	.option('-p, --port [port]',     "the port to listen to",     a=>parseInt(a, 10),  config['port'] ||  8888       )
+	.option('-s, --soap-url [url]',  "the wsdl endpoint of the Mutalyzer SOAP API",    config['soap-url']            )
 	.parse(process.argv);
 
 export default commander;
