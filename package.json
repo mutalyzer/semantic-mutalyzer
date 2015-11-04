@@ -1,18 +1,18 @@
 {
-  "name": "mutalyzer-sadi",
-  "version": "0.1.0",
+  "name":        "mutalyzer-sadi",
+  "version":     "0.1.0",
   "description": "a SADIfied Mutalyzer",
-  "main": "dist/server/server.js",
+  "main":        "dist/server/server.js",
   "scripts": {
-    "build-server": "webpack; cp src/swagger.json dist",
-    "build-docs": "cp -r src/docs dist",
-    "build": "npm run build-server; npm run build-docs",
-    "prestart": "npm run build",
-    "start": "forever start -a -l forever.log -o out.log -e err.log ./dist/server/server.js",
-    "stop": "forever stop dist/server/server.js",
-    "prerestart": "npm run build",
-    "restart": "forever restart -a ./dist/server/server.js",
-    "test": "mocha dist/test/test.js"
+    "build-server": "webpack; node dist/tools/buildSwaggerJSON.js",
+    "build-docs":   "cp -r src/docs dist",
+    "build":        "npm run build-server; npm run build-docs",
+    "prestart":     "npm run build",
+    "start":        "forever start -a -l forever.log -o out.log -e err.log ./dist/server/server.js",
+    "stop":         "forever stop dist/server/server.js",
+    "prerestart":   "npm run build",
+    "restart":      "forever restart -a ./dist/server/server.js",
+    "test":         "mocha dist/test/test.js"
   },
   "keywords": [
     "mutalyzer",
