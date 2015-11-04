@@ -83,13 +83,11 @@ function errorNormalizer(err, req, res, next) {
 
 }
 
-
 /* error logging */
 function errorLogger(err, req, res, next) {
 	console.error(JSON.stringify(err, null, 4));
 	return next(err);
 }
-
 
 /* error transmission */
 function errorTransmitter(err, req, res, next) {
@@ -97,10 +95,8 @@ function errorTransmitter(err, req, res, next) {
 	return next(err);
 }
 
-
 /* done with error */
 function doneWithError(err, req, res, next) {}
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,40 +108,14 @@ export default co.wrap(function* (distDir, {soapUrl, consoleLogging}) {
 	/* the express application */
 	let server = express();
 
-
-
-	//console.log('(1)');
-
-
-
 	/* setting up the soap client */
 	let soap = yield Soap.createClient(soapUrl);
-
-
-
-	//console.log('(2)');
-
-
 
 	/* load the middleware */
 	let [middleware, swagger] = yield swaggerMiddleware(`${distDir}/swagger.json`, server);
 
-
-
-	//console.log('(3)');
-
-
-
 	/* serve swagger-ui based documentation */
 	server.use('/docs', express.static(`${distDir}/docs/`));
-
-
-
-	//console.log('(4)');
-
-
-	//inspect(middleware);
-
 
 	/* use Swagger middleware */
 	server.use(
@@ -154,12 +124,6 @@ export default co.wrap(function* (distDir, {soapUrl, consoleLogging}) {
 		middleware.parseRequest(),
 		middleware.validateRequest()
 	);
-
-
-
-	//console.log('(5)');
-
-
 
 	/* request handling */
 	for (let path of Object.keys(swagger.paths)) {
@@ -173,23 +137,11 @@ export default co.wrap(function* (distDir, {soapUrl, consoleLogging}) {
 		}
 	}
 
-
-
-	//console.log('(6)');
-
-
-
 	/* handling error messages */
 	server.use(errorNormalizer);
 	if (consoleLogging !== false) { server.use(errorLogger) }
 	server.use(errorTransmitter);
 	server.use(doneWithError);
-
-
-
-	//console.log('(7)');
-
-
 
 	/* return the server app */
 	return server;
