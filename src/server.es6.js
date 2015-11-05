@@ -3,11 +3,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /* external libs */
-import _                 from 'lodash';
-import co                from 'co';
-import express           from 'express';
-import Soap              from 'soap-as-promised';
-import promisify         from 'es6-promisify';
+import _          from 'lodash';
+import co         from 'co';
+import express    from 'express';
+import favicon    from'serve-favicon';
+import Soap       from 'soap-as-promised';
+import Handlebars from 'handlebars';
+import promisify  from 'es6-promisify';
 const swaggerMiddleware = promisify(require('swagger-express-middleware'));
 
 /* local stuff */
@@ -26,13 +28,63 @@ import {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Error subclasses                                                                                                   //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class MutalyzerError extends Error {
+	constructor({errorcode, message}) {
+		super(message);
+		this.message = message;
+		this.status = BAD_REQUEST;
+		this.code = errorcode;
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // operations                                                                                                         //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 let operations = {
-	*runMutalyzer({soap, req, res}) {
-		let {runMutalyzerResult} = yield soap.runMutalyzer({ variant: req.query.variant });
+	*runMutalyzer({soap, mimeType, ttl, req, res}) {
+
+		/* extract the expected parameters */
+		const params = _.pick(req.query, ['variant']);
+
+		/* call the Mutalyzer SOAP server */
+		let {runMutalyzerResult} = yield soap.runMutalyzer(params);
+
+		/* 'flatten' the SOAP output */
+		for (let [key, value] of Object.entries(runMutalyzerResult)) {
+			if (_.isPlainObject(value)) {
+				runMutalyzerResult[key] = [...Object.values(value)][0];
+			}
+		}
+
+		/* throw any errors */
+		if (runMutalyzerResult.errors > 0) {
+			for (let msg of runMutalyzerResult.messages) {
+				if (msg.errorcode[0] === 'E') {
+					throw new MutalyzerError(msg);
+				}
+			}
+		}
+
+		/* handle alternative requested output mime-types */
+		if (mimeType === 'text/turtle') {
+			let context = _.cloneDeep({ ...params, ...runMutalyzerResult}, (val, key) => {
+				if (_.isString(val)) { return val.replace(/\./g, '\\.') }
+				//if (key === 'referenceId') {
+				//	// als het begint met LRG_, dan een getal, dan 't'+ getal (optioneel),
+				//	// haal 't'getal ervanaf voor de IRI
+				//}
+			});
+			runMutalyzerResult = ttl.runMutalyzer(context);
+		}
+
+		/* send the result */
 		res.status(OK).send(runMutalyzerResult);
+
 	}
 };
 
@@ -49,6 +101,11 @@ for (let [name, fn] of Object.entries(operations)) {
 
 /* error normalizer */
 function errorNormalizer(err, req, res, next) {
+
+	/* Mutalyzer errors */
+	if (err instanceof MutalyzerError) {
+		return next(err);
+	}
 
 	/* swagger errors */
 	if (err.message && err.message.match(/^\d\d\d Error:/)) {
@@ -111,10 +168,16 @@ export default co.wrap(function* (distDir, {soapUrl, consoleLogging}) {
 	/* setting up the soap client */
 	let soap = yield Soap.createClient(soapUrl);
 
+	/* setting up the turtle Handlebar templates */
+	let ttl = {
+		runMutalyzer: Handlebars.compile(require('raw!./templates/runMutalyzer._ttl'))
+	};
+
 	/* load the middleware */
 	let [middleware, swagger] = yield swaggerMiddleware(`${distDir}/swagger.json`, server);
 
 	/* serve swagger-ui based documentation */
+	server.use(favicon('dist/'+require('file!./images/favicon.ico')));
 	server.use('/docs', express.static(`${distDir}/docs/`));
 
 	/* use Swagger middleware */
@@ -131,7 +194,8 @@ export default co.wrap(function* (distDir, {soapUrl, consoleLogging}) {
 		let expressStylePath = path.replace(/{(\w+)}/g, ':$1');
 		for (let method of Object.keys(pathObj).filter(p => !/x-/.test(p))) {
 			server[method](expressStylePath, (req, res, next) => {
-				try { operations[pathObj[method]['x-operation']]({soap, req, res}).catch(next) }
+				let mimeType = req.accepts(swagger.produces);
+				try { operations[pathObj[method]['x-operation']]({soap, mimeType, ttl, req, res}).catch(next) }
 				catch (err) { next(err) }
 			});
 		}

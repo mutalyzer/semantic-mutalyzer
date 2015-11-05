@@ -193,7 +193,7 @@ for (let typeSchema of Object.values(definitions)) {
 
 const paths = {
 	'/runMutalyzer': {
-		post: {
+		get: {
 			summary: "run the Mutalyzer name checker",
 			'x-operation': 'runMutalyzer',
 			parameters: [
@@ -227,8 +227,8 @@ export default {
 		version: '1'
 	},
 	host: `${config.host}:${config.port}`,
-	consumes: ['application/json', 'application/ld+json', 'text/turtle'],
-	produces: ['application/json', 'application/ld+json', 'text/turtle'],
+	consumes: ['application/json', 'text/turtle'], //, 'application/ld+json'
+	produces: ['application/json', 'text/turtle'], //, 'application/ld+json'
 	definitions,
 	paths
 };

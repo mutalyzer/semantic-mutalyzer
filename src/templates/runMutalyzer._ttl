@@ -1,0 +1,34 @@
+##### URL Prefixes #####################################################################################################
+
+@prefix	rdf:	 <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix	rdfs:	 <http://www.w3.org/2000/01/rdf-schema#>       .
+
+@prefix rsa:     <http://rdf.biosemantics.org/ontologies/rsa#> .  # Reference Sequence Annotation Ontology
+@prefix gfvo:    <http://www.biointerchange.org/gfvo#>         .  # Genomic Feature and Variation Ontology
+@prefix so:      <http://purl.obolibrary.org/obo/>             .  # Sequence Types and Features Ontology
+@prefix soP:     <http://purl.obolibrary.org/obo/so-xp.obo>    .  # Sequence Types and Features Ontology predicates
+
+@prefix RefSeq:  <http://www.ncbi.nlm.nih.gov/nuccore/>        .  # ncbi
+@prefix Variant: <http://mutalyzer.nl/ontologies/variant/>     .  # <dummy>
+@prefix Exon:    <http://mutalyzer.nl/ontologies/exon/>        .  # <dummy>
+
+
+##### Relating the output of the API to the input variant ##############################################################
+
+Variant:{{{variant}}}
+        rdf:type  gfvo:SequenceVariant  ;
+        rdf:label  "{{{variant}}}"  ;
+{{#each exons}}
+        soP:associatedWith  Exon:{{{../referenceId}}}\-{{gStart}}\-{{gStop}}  ;
+{{/each}}
+        soP:variant_of  RefSeq:{{{referenceId}}}  .
+
+
+##### Defining the exons ###############################################################################################
+
+{{#each exons}}
+Exon:{{{../referenceId}}}\-{{gStart}}-{{gStop}}
+        rdf:type   so:0000147  ;
+        rsa:start  {{gStart}}  ;
+        rsa:end    {{gStop}}  .
+{{/each}}
