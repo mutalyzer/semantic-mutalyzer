@@ -27,7 +27,7 @@ Variant:{{{variant}}}
 ##### Defining the exons ###############################################################################################
 
 {{#each exons}}
-Exon:{{{../referenceId}}}\-{{gStart}}-{{gStop}}
+Exon:{{{../referenceId}}}\-{{gStart}}\-{{gStop}}
         rdf:type   so:0000147  ;
         rsa:start  {{gStart}}  ;
         rsa:end    {{gStop}}  .

@@ -4,9 +4,8 @@
 
 /* external libs */
 import _          from 'lodash';
-import co         from 'co';
 import express    from 'express';
-import favicon    from'serve-favicon';
+import favicon    from 'serve-favicon';
 import Soap       from 'soap-as-promised';
 import Handlebars from 'handlebars';
 import promisify  from 'es6-promisify';
@@ -28,17 +27,12 @@ import {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Error subclasses                                                                                                   //
+// setting up templates                                                                                               //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class MutalyzerError extends Error {
-	constructor({errorcode, message}) {
-		super(message);
-		this.message = message;
-		this.status = BAD_REQUEST;
-		this.code = errorcode;
-	}
-}
+const ttl = {
+	runMutalyzer: Handlebars.compile(require('raw!./templates/runMutalyzer._ttl'))
+};
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,13 +40,13 @@ class MutalyzerError extends Error {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 let operations = {
-	*runMutalyzer({soap, mimeType, ttl, req, res}) {
+	async runMutalyzer({soap, mimeType, req, res}) {
 
 		/* extract the expected parameters */
 		const params = _.pick(req.query, ['variant']);
 
 		/* call the Mutalyzer SOAP server */
-		let {runMutalyzerResult} = yield soap.runMutalyzer(params);
+		let {runMutalyzerResult} = await soap.runMutalyzer(params);
 
 		/* 'flatten' the SOAP output */
 		for (let [key, value] of Object.entries(runMutalyzerResult)) {
@@ -88,16 +82,20 @@ let operations = {
 	}
 };
 
-/* wrapping the functions above with co.wrap */
-for (let [name, fn] of Object.entries(operations)) {
-	operations[name] = co.wrap(fn);
-}
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // error-related custom middleware                                                                                    //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/* errors from Mutalyzer output */
+class MutalyzerError extends Error {
+	constructor({errorcode, message}) {
+		super(message);
+		this.message = message;
+		this.status  = BAD_REQUEST;
+		this.code    = errorcode;
+	}
+}
 
 /* error normalizer */
 function errorNormalizer(err, req, res, next) {
@@ -160,21 +158,16 @@ function doneWithError(err, req, res, next) {}
 // the server                                                                                                         //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export default co.wrap(function* (distDir, {soapUrl, consoleLogging}) {
+export default async (distDir, {soapUrl, consoleLogging}) => {
 
 	/* the express application */
 	let server = express();
 
 	/* setting up the soap client */
-	let soap = yield Soap.createClient(soapUrl);
-
-	/* setting up the turtle Handlebar templates */
-	let ttl = {
-		runMutalyzer: Handlebars.compile(require('raw!./templates/runMutalyzer._ttl'))
-	};
+	let soap = await Soap.createClient(soapUrl);
 
 	/* load the middleware */
-	let [middleware, swagger] = yield swaggerMiddleware(`${distDir}/swagger.json`, server);
+	let [middleware, swagger] = await swaggerMiddleware(`${distDir}/swagger.json`, server);
 
 	/* serve swagger-ui based documentation */
 	server.use(favicon('dist/'+require('file!./images/favicon.ico')));
@@ -195,7 +188,7 @@ export default co.wrap(function* (distDir, {soapUrl, consoleLogging}) {
 		for (let method of Object.keys(pathObj).filter(p => !/x-/.test(p))) {
 			server[method](expressStylePath, (req, res, next) => {
 				let mimeType = req.accepts(swagger.produces);
-				try { operations[pathObj[method]['x-operation']]({soap, mimeType, ttl, req, res}).catch(next) }
+				try { operations[pathObj[method]['x-operation']]({soap, mimeType, req, res}).catch(next) }
 				catch (err) { next(err) }
 			});
 		}
@@ -210,4 +203,4 @@ export default co.wrap(function* (distDir, {soapUrl, consoleLogging}) {
 	/* return the server app */
 	return server;
 
-});
+};

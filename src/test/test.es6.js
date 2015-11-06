@@ -2,8 +2,7 @@
 // imports                                                                                                            //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-import co from 'co';
-import _  from 'lodash';
+import _    from 'lodash';
 import chai from 'chai';
 const {expect} = chai;
 
