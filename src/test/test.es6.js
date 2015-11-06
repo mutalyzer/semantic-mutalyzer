@@ -14,7 +14,7 @@ const {expect} = chai;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// utility                                                                                                            //
+// utility functions                                                                                                  //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const validateTurtleCode = (input) => new Promise((resolve, reject) => {
@@ -66,16 +66,25 @@ describe("docs", () => {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+beforeEach(() => { MockSoapServer.install() });
+afterEach (() => { MockSoapServer.restore() });
+
 describe("/runMutalyzer", () => {
 
-	beforeEach(() => { MockSoapServer.install() });
-	afterEach (() => { MockSoapServer.restore() });
+	it("responds with valid JSON output when requested", () => api
+		.get('/runMutalyzer')
+		.set('Accept', 'application/json')
+		.query({ variant: 'AB026906.1:c.3_4insG' })
+		.expect(200)
+		.expect('Content-Type', /application\/json/)
+		.expect(({text}) => { JSON.parse(text) }));
 
 	it("responds with valid turtle output when requested", () => api
 		.get('/runMutalyzer')
 		.set('Accept', 'text/turtle')
 		.query({ variant: 'AB026906.1:c.3_4insG' })
 		.expect(200)
+		.expect('Content-Type', /text\/turtle/)
 		.then(({text}) => validateTurtleCode(text)));
 
 });

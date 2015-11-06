@@ -172,6 +172,9 @@ const definitions = {
 			'message':   { type: 'string' }
 		}
 	}
+
+	// <-- insert other data-type definitions here
+
 };
 
 /* set proper 'required' schema properties */
@@ -192,6 +195,7 @@ for (let typeSchema of Object.values(definitions)) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const paths = {
+
 	'/runMutalyzer': {
 		get: {
 			summary: "run the Mutalyzer name checker",
@@ -213,6 +217,9 @@ const paths = {
 			}
 		}
 	}
+
+	// <-- insert other path specifications here
+
 };
 
 

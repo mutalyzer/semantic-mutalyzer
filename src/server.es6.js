@@ -12,26 +12,55 @@ import promisify  from 'es6-promisify';
 const swaggerMiddleware = promisify(require('swagger-express-middleware'));
 
 /* local stuff */
-import {debugPromise, inspect} from './utility.es6.js';
+import {inspect} from './utility.es6.js';
+import {OK} from './http-status-codes.es6.js';
 import {
-	OK,
-	CREATED,
-	NO_CONTENT,
-	BAD_REQUEST,
-	NOT_FOUND,
-	CONFLICT,
-	GONE,
-	PRECONDITION_FAILED,
-	INTERNAL_SERVER_ERROR
-} from './http-status-codes.es6.js';
+	MutalyzerError,
+	errorNormalizer,
+	errorLogger,
+	errorTransmitter,
+	doneWithError
+} from './errors.es6.js';
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// setting up templates                                                                                               //
+// SOAP specific utility function                                                                                     //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+async function soapOperation(soap, operation, params) {
+	/* call the Mutalyzer SOAP server */
+	let result = [...Object.values(await soap[operation](params))][0];
+
+	/* 'flatten' the SOAP output */
+	for (let [key, value] of Object.entries(result)) {
+		if (_.isPlainObject(value)) {
+			result[key] = [...Object.values(value)][0];
+		}
+	}
+
+	/* throw any errors */
+	if (result.errors > 0) {
+		for (let msg of result.messages) {
+			if (msg.errorcode[0] === 'E') {
+				throw new MutalyzerError(msg);
+			}
+		}
+	}
+
+	/* return the result */
+	return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Turtle templates                                                                                                   //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const ttl = {
+
 	runMutalyzer: Handlebars.compile(require('raw!./templates/runMutalyzer._ttl'))
+
+	// <-- insert templates for other API responses here
+
 };
 
 
@@ -39,122 +68,33 @@ const ttl = {
 // operations                                                                                                         //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-let operations = {
-	async runMutalyzer({soap, mimeType, req, res}) {
+const operations = {
 
+	async runMutalyzer({soap, mimeType, req, res}) {
 		/* extract the expected parameters */
 		const params = _.pick(req.query, ['variant']);
 
 		/* call the Mutalyzer SOAP server */
-		let __input  = params;
-		let __output = await soap.runMutalyzer(__input);
-		let {runMutalyzerResult} = __output;
+		let runMutalyzerResult = await soapOperation(soap, 'runMutalyzer', params);
 
-		/* 'flatten' the SOAP output */
-		for (let [key, value] of Object.entries(runMutalyzerResult)) {
-			if (_.isPlainObject(value)) {
-				runMutalyzerResult[key] = [...Object.values(value)][0];
-			}
-		}
-
-		/* throw any errors */
-		if (runMutalyzerResult.errors > 0) {
-			for (let msg of runMutalyzerResult.messages) {
-				if (msg.errorcode[0] === 'E') {
-					throw new MutalyzerError(msg);
-				}
-			}
-		}
-
-		/* handle alternative requested output mime-types */
+		/* translate result to Turtle when that mime type was requested */
 		if (mimeType === 'text/turtle') {
 			runMutalyzerResult = ttl.runMutalyzer(_.cloneDeep(
 				{...params, ...runMutalyzerResult},
 				(val, key) => {
-					if (_.isString(val)) {
-						return val.replace(/\./g, '\\.')
-					}
+					/* escaping certain characters */
+					if (_.isString(val)) { return val.replace(/\./g, '\\.') }
 				}
 			));
 		}
 
 		/* send the result */
-		res.status(OK).send(runMutalyzerResult);
-
+		res.status(OK).set('content-type', mimeType).send(runMutalyzerResult);
 	}
+
+	// <-- insert implementations for other API calls here
+
 };
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// error-related custom middleware                                                                                    //
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/* errors from Mutalyzer output */
-class MutalyzerError extends Error {
-	constructor({errorcode, message}) {
-		super(message);
-		this.message = message;
-		this.status = BAD_REQUEST;
-		this.code = errorcode;
-	}
-}
-
-/* error normalizer */
-function errorNormalizer(err, req, res, next) {
-
-	/* Mutalyzer errors */
-	if (err instanceof MutalyzerError) {
-		return next(err);
-	}
-
-	/* swagger errors */
-	if (err.message && err.message.match(/^\d\d\d Error:/)) {
-		let messages = [];
-		let properties = {};
-		for (let msgPart of err.message.split('\n')) {
-			let match = msgPart.match(/\d\d\d Error: (.*)/);
-			if (match) {
-				messages.push(match[1]);
-				continue;
-			}
-			match = msgPart.match(/(.*?): \s*"?([^"]*)"?\s*/);
-			if (match) {
-				properties[match[1]] = match[2];
-				continue;
-			}
-		}
-		return next({
-			info: properties,
-			status: err.status,
-			message: messages.map(msg => msg.replace(/"([\w\d\-_\s]+?)"/g, "'$1'")).join(' ')
-			//       ^ we like single-quoted strings
-		});
-	}
-
-	/* any other errors */
-	return next({
-		status: INTERNAL_SERVER_ERROR,
-		message: "An error occurred on the server that we did not expect. Please let us know!",
-		originalError: err
-	});
-
-}
-
-/* error logging */
-function errorLogger(err, req, res, next) {
-	console.error(JSON.stringify(err, null, 4));
-	return next(err);
-}
-
-/* error transmission */
-function errorTransmitter(err, req, res, next) {
-	res.status(err.status).send(err);
-	return next(err);
-}
-
-/* done with error */
-function doneWithError(err, req, res, next) {
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,10 +132,9 @@ export default async (distDir, {soapUrl, consoleLogging}) => {
 			server[method](expressStylePath, (req, res, next) => {
 				let mimeType = req.accepts(swagger.produces);
 				try {
-					operations[pathObj[method]['x-operation']]({soap, mimeType, req, res}).catch(next)
-				}
-				catch (err) {
-					next(err)
+					operations[pathObj[method]['x-operation']]({soap, mimeType, req, res}).catch(next);
+				} catch (err) {
+					next(err);
 				}
 			});
 		}
