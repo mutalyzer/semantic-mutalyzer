@@ -54,8 +54,8 @@ node dist/server/server.js --help
 
 When the server is running (assuming default values in `config.json`)
 you can open `http://localhost:8888/docs` in the browser to read
-the API documentation. You can also use that page to try out the API
-right there.
+the automatically generated API documentation. You can also use that
+page to try out the API right there.
 
 There will also be a [Swagger](http://swagger.io/) description of the API
 available at `http://localhost:8888/swagger.json`, which can be used by
@@ -169,18 +169,18 @@ As of this writing, only the `runMutalyzer` operation is supported
 (and that only partially). To add a new server operation, the
 following things should be done:
 
-    1. In `/src/swagger.es6.js`, add a specification of the new operation in the `paths` object.
-       If necessary, add related data-type specifications in `definitions`.
-    2. In `/src/server.es6.js`, add the implementation of the new operation to the
-       `operations` object. If necessary, add a new [Turtle](http://www.w3.org/TR/turtle/)
-       response template to the `ttl` object.
-       You can add a file to `/src/templates` to help with this,
-       using [Handlebar](http://handlebarsjs.com) template syntax.
-    3. Write a set of tests for the new operation in `/src/test/test.es6.js`.
-       To accommodate these tests, add some cached responses to `/src/test/mock-soap-server.es6.js`.
-       To get the proper data for these cached responses, you can temporarily enable all
-       network traffic and nock-recording in that same file: comment in/out the relevant lines
-       of code at the top of that file.
+1. In `/src/swagger.es6.js`, add a specification of the new operation in the `paths` object.
+   If necessary, add related data-type specifications in `definitions`.
+2. In `/src/server.es6.js`, add the implementation of the new operation to the
+   `operations` object. If necessary, add a new [Turtle](http://www.w3.org/TR/turtle/)
+   response template to the `ttl` object.
+   You can add a file to `/src/templates` to help with this,
+   using [Handlebar](http://handlebarsjs.com) template syntax.
+3. Write a set of tests for the new operation in `/src/test/test.es6.js`.
+   To accommodate these tests, add some cached responses to `/src/test/mock-soap-server.es6.js`.
+   To get the proper data for these cached responses, you can temporarily enable all
+   network traffic and nock-recording in that same file: comment in/out the relevant lines
+   of code at the top of that file.
 
 ### How to augment semantic connections in existing RDF responses
 
