@@ -46,7 +46,9 @@ let operations = {
 		const params = _.pick(req.query, ['variant']);
 
 		/* call the Mutalyzer SOAP server */
-		let {runMutalyzerResult} = await soap.runMutalyzer(params);
+		let __input  = params;
+		let __output = await soap.runMutalyzer(__input);
+		let {runMutalyzerResult} = __output;
 
 		/* 'flatten' the SOAP output */
 		for (let [key, value] of Object.entries(runMutalyzerResult)) {

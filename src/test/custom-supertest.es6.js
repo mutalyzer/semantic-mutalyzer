@@ -21,4 +21,4 @@ Object.assign(SuperTest.Test.prototype, {
 	}
 });
 
-export default require('supertest-as-promised');
+export default require();

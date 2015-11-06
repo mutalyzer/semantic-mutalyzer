@@ -1,7 +1,7 @@
 {
-  "name": "mutalyzer-sadi",
+  "name": "semantic-mutalyzer",
   "version": "0.1.0",
-  "description": "a SADIfied Mutalyzer",
+  "description": "a Mutalyzer service that can provide RDF output (as well as simple JSON)",
   "main": "dist/server/server.js",
   "scripts": {
     "build-server": "webpack; node dist/tools/buildSwaggerJSON.js",
@@ -15,8 +15,7 @@
     "test": "mocha dist/test/test.js"
   },
   "keywords": [
-    "mutalyzer",
-    "SADI"
+    "mutalyzer"
   ],
   "authors": [
     "Michiel Helvensteijn <mhelvens@gmail.com>"
@@ -27,26 +26,39 @@
     "es6-promisify": "~3",
     "express": "~4",
     "forever": "~0.15",
-    "handlebars": "^4.0.4",
+    "handlebars": "~4",
     "lodash": "~3",
-    "serve-favicon": "^2.3.0",
+    "serve-favicon": "~2",
     "soap": "~0.11",
     "soap-as-promised": "~1",
-    "swagger-express-middleware": "~1"
+    "swagger-express-middleware": "~1.0.0-alpha"
   },
   "devDependencies": {
     "babel": "~5",
     "babel-core": "~5",
     "babel-loader": "~5",
     "chai": "~3",
-    "file-loader": "^0.8.4",
-    "json-loader": "~0.5",
+    "faux-jax": "^4.1.0",
+    "file-loader": "~0.8",
+    "json-loader": "^0.5.3",
     "mocha": "~2",
-    "raw-loader": "^0.5.1",
+    "n3": "~0.4",
+    "nock": "^2.17.0",
+    "raw-loader": "~0.5",
+    "sinon": "^1.17.2",
     "supertest": "~1",
     "supertest-as-promised": "~2",
     "swagger": "~0.7",
     "swagger-ui": "~2",
+    "turtle-validator": "mmlab/TurtleValidator#b330e0e74cb8e8a5f6a79a5048f613e737e940e0",
     "webpack": "~1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mhelvens/semantic-mutalyzer"
+  },
+  "bugs": {
+    "url": "https://github.com/mhelvens/semantic-mutalyzer/issues"
+  },
+  "license": "MIT"
 }

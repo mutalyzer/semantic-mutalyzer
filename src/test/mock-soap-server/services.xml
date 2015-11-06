@@ -1,0 +1,430 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions xmlns:wsa="http://schemas.xmlsoap.org/ws/2003/03/addressing" xmlns:tns="http://mutalyzer.nl/2.0/services" xmlns:plink="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:xop="http://www.w3.org/2004/08/xop/include" xmlns:soap12env="http://www.w3.org/2003/05/soap-envelope/" xmlns:senc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:senv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap12enc="http://www.w3.org/2003/05/soap-encoding/" targetNamespace="http://mutalyzer.nl/2.0/services" name="Mutalyzer"><wsdl:types><xs:schema targetNamespace="http://mutalyzer.nl/2.0/services" elementFormDefault="qualified"><xs:complexType name="stringArray"><xs:sequence><xs:element name="string" type="xs:string" minOccurs="0" maxOccurs="unbounded" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="SoapMessage"><xs:sequence><xs:element name="errorcode" type="xs:string"/><xs:element name="message" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="SoapMessageArray"><xs:sequence><xs:element name="SoapMessage" type="tns:SoapMessage" minOccurs="0" maxOccurs="unbounded" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="ExonInfo"><xs:sequence><xs:element name="chromStop" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="gStop" type="xs:integer"/><xs:element name="cStart" type="xs:string"/><xs:element name="gStart" type="xs:integer"/><xs:element name="cStop" type="xs:string"/><xs:element name="chromStart" type="xs:integer" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="ExonInfoArray"><xs:sequence><xs:element name="ExonInfo" type="tns:ExonInfo" minOccurs="0" maxOccurs="unbounded" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="info"/><xs:complexType name="ping"/><xs:complexType name="CacheEntry"><xs:sequence><xs:element name="hash" type="xs:string"/><xs:element name="name" type="xs:string"/><xs:element name="chromosomeOrientation" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="url" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="created" type="xs:dateTime"/><xs:element name="cached" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="chromosomeStop" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="chromosomeName" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="gi" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="chromosomeStart" type="xs:integer" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="CheckSyntaxOutput"><xs:sequence><xs:element name="messages" type="tns:SoapMessageArray" minOccurs="0" nillable="true"/><xs:element name="valid" type="xs:boolean"/></xs:sequence></xs:complexType><xs:complexType name="GeneLocation"><xs:sequence><xs:element name="assembly_name" type="xs:string"/><xs:element name="orientation" type="xs:string"/><xs:element name="stop" type="xs:integer"/><xs:element name="start" type="xs:integer"/><xs:element name="chromosome_accession" type="xs:string"/><xs:element name="chromosome_name" type="xs:string"/><xs:element name="gene" type="xs:string"/><xs:element name="assembly_alias" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="InfoOutput"><xs:sequence><xs:element name="contactEmail" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="announcement" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="serverName" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="nomenclatureVersion" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="announcementUrl" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="releaseDate" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="version" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="versionParts" type="tns:stringArray" minOccurs="0" nillable="true"/><xs:element name="nomenclatureVersionParts" type="tns:stringArray" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="ProteinTranscript"><xs:sequence><xs:element name="name" type="xs:string"/><xs:element name="product" type="xs:string"/><xs:element name="id" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="RawVar"><xs:sequence><xs:element name="sample_start" type="xs:integer"/><xs:element name="end" type="xs:integer"/><xs:element name="weight" type="xs:integer"/><xs:element name="sample_end" type="xs:integer"/><xs:element name="deleted" type="xs:string"/><xs:element name="type" type="xs:string"/><xs:element name="inserted" type="xs:string"/><xs:element name="start_offset" type="xs:integer"/><xs:element name="start" type="xs:integer"/><xs:element name="shift" type="xs:integer"/><xs:element name="sample_start_offset" type="xs:integer"/><xs:element name="end_offset" type="xs:integer"/><xs:element name="sample_end_offset" type="xs:integer"/><xs:element name="description" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="RawVariant"><xs:sequence><xs:element name="description" type="xs:string"/><xs:element name="visualisation" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="Transcript"><xs:sequence><xs:element name="trans_start" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="trans_stop" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="CDS_stop" type="xs:integer" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="TranscriptMappingInfo"><xs:sequence><xs:element name="cds_start" type="xs:integer"/><xs:element name="cds_stop" type="xs:integer"/><xs:element name="name" type="xs:string"/><xs:element name="stop" type="xs:integer"/><xs:element name="start" type="xs:integer"/><xs:element name="version" type="xs:integer"/><xs:element name="gene" type="xs:string"/><xs:element name="orientation" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="TranscriptNameInfo"><xs:sequence><xs:element name="transcriptName" type="xs:string"/><xs:element name="productName" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="checkSyntax"><xs:sequence><xs:element name="variant" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="chromAccession"><xs:sequence><xs:element name="build" type="xs:string"/><xs:element name="name" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="chromAccessionResponse"><xs:sequence><xs:element name="chromAccessionResult" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="chromosomeName"><xs:sequence><xs:element name="build" type="xs:string"/><xs:element name="accNo" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="chromosomeNameResponse"><xs:sequence><xs:element name="chromosomeNameResult" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="descriptionExtract"><xs:sequence><xs:element name="reference" type="xs:string"/><xs:element name="observed" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="getBatchJob"><xs:sequence><xs:element name="job_id" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="getBatchJobResponse"><xs:sequence><xs:element name="getBatchJobResult" type="xs:base64Binary" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="getCache"><xs:sequence><xs:element name="created_since" type="xs:dateTime" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="getGeneAndTranscript"><xs:sequence><xs:element name="genomicReference" type="xs:string"/><xs:element name="transcriptReference" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="getGeneLocation"><xs:sequence><xs:element name="gene" type="xs:string"/><xs:element name="build" type="xs:string" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="getGeneName"><xs:sequence><xs:element name="build" type="xs:string"/><xs:element name="accno" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="getGeneNameResponse"><xs:sequence><xs:element name="getGeneNameResult" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="getTranscripts"><xs:sequence><xs:element name="build" type="xs:string"/><xs:element name="chrom" type="xs:string"/><xs:element name="pos" type="xs:integer"/><xs:element name="versions" type="xs:boolean" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="getTranscriptsAndInfo"><xs:sequence><xs:element name="genomicReference" type="xs:string"/><xs:element name="geneName" type="xs:string" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="getTranscriptsByGeneName"><xs:sequence><xs:element name="build" type="xs:string"/><xs:element name="name" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="getTranscriptsByGeneNameResponse"><xs:sequence><xs:element name="getTranscriptsByGeneNameResult" type="tns:stringArray" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="getTranscriptsMapping"><xs:sequence><xs:element name="build" type="xs:string"/><xs:element name="chrom" type="xs:string"/><xs:element name="pos1" type="xs:integer"/><xs:element name="pos2" type="xs:integer"/><xs:element name="method" type="xs:integer"/></xs:sequence></xs:complexType><xs:complexType name="getTranscriptsRange"><xs:sequence><xs:element name="build" type="xs:string"/><xs:element name="chrom" type="xs:string"/><xs:element name="pos1" type="xs:integer"/><xs:element name="pos2" type="xs:integer"/><xs:element name="method" type="xs:integer"/></xs:sequence></xs:complexType><xs:complexType name="getTranscriptsRangeResponse"><xs:sequence><xs:element name="getTranscriptsRangeResult" type="tns:stringArray" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="getTranscriptsResponse"><xs:sequence><xs:element name="getTranscriptsResult" type="tns:stringArray" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="getchromName"><xs:sequence><xs:element name="build" type="xs:string"/><xs:element name="acc" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="getchromNameResponse"><xs:sequence><xs:element name="getchromNameResult" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="getdbSNPDescriptions"><xs:sequence><xs:element name="rs_id" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="getdbSNPDescriptionsResponse"><xs:sequence><xs:element name="getdbSNPDescriptionsResult" type="tns:stringArray" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="mappingInfo"><xs:sequence><xs:element name="LOVD_ver" type="xs:string"/><xs:element name="build" type="xs:string"/><xs:element name="accNo" type="xs:string"/><xs:element name="variant" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="monitorBatchJob"><xs:sequence><xs:element name="job_id" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="monitorBatchJobResponse"><xs:sequence><xs:element name="monitorBatchJobResult" type="xs:integer" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="numberConversion"><xs:sequence><xs:element name="build" type="xs:string"/><xs:element name="variant" type="xs:string"/><xs:element name="gene" type="xs:string" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="pingResponse"><xs:sequence><xs:element name="pingResult" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="runMutalyzer"><xs:sequence><xs:element name="variant" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="sliceChromosome"><xs:sequence><xs:element name="chromAccNo" type="xs:string"/><xs:element name="start" type="xs:integer"/><xs:element name="end" type="xs:integer"/><xs:element name="orientation" type="xs:integer"/></xs:sequence></xs:complexType><xs:complexType name="sliceChromosomeByGene"><xs:sequence><xs:element name="geneSymbol" type="xs:string"/><xs:element name="organism" type="xs:string"/><xs:element name="upStream" type="xs:integer"/><xs:element name="downStream" type="xs:integer"/></xs:sequence></xs:complexType><xs:complexType name="sliceChromosomeByGeneResponse"><xs:sequence><xs:element name="sliceChromosomeByGeneResult" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="sliceChromosomeResponse"><xs:sequence><xs:element name="sliceChromosomeResult" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="submitBatchJob"><xs:sequence><xs:element name="data" type="xs:base64Binary"/><xs:element name="process" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="argument" type="xs:string" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="submitBatchJobResponse"><xs:sequence><xs:element name="submitBatchJobResult" type="xs:string" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="transcriptInfo"><xs:sequence><xs:element name="LOVD_ver" type="xs:string"/><xs:element name="build" type="xs:string"/><xs:element name="accNo" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="uploadGenBankLocalFile"><xs:sequence><xs:element name="data" type="xs:base64Binary"/></xs:sequence></xs:complexType><xs:complexType name="uploadGenBankLocalFileResponse"><xs:sequence><xs:element name="uploadGenBankLocalFileResult" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="uploadGenBankRemoteFile"><xs:sequence><xs:element name="url" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="uploadGenBankRemoteFileResponse"><xs:sequence><xs:element name="uploadGenBankRemoteFileResult" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="TranscriptMappingInfoArray"><xs:sequence><xs:element name="TranscriptMappingInfo" type="tns:TranscriptMappingInfo" minOccurs="0" maxOccurs="unbounded" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="RawVariantArray"><xs:sequence><xs:element name="RawVariant" type="tns:RawVariant" minOccurs="0" maxOccurs="unbounded" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="RawVarArray"><xs:sequence><xs:element name="RawVar" type="tns:RawVar" minOccurs="0" maxOccurs="unbounded" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="CacheEntryArray"><xs:sequence><xs:element name="CacheEntry" type="tns:CacheEntry" minOccurs="0" maxOccurs="unbounded" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="checkSyntaxResponse"><xs:sequence><xs:element name="checkSyntaxResult" type="tns:CheckSyntaxOutput" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="getGeneAndTranscriptResponse"><xs:sequence><xs:element name="getGeneAndTranscriptResult" type="tns:TranscriptNameInfo" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="getGeneLocationResponse"><xs:sequence><xs:element name="getGeneLocationResult" type="tns:GeneLocation" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="infoResponse"><xs:sequence><xs:element name="infoResult" type="tns:InfoOutput" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="numberConversionResponse"><xs:sequence><xs:element name="numberConversionResult" type="tns:stringArray" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="transcriptInfoResponse"><xs:sequence><xs:element name="transcriptInfoResult" type="tns:Transcript" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="Allele"><xs:sequence><xs:element name="description" type="xs:string"/><xs:element name="allele" type="tns:RawVarArray" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="Mapping"><xs:sequence><xs:element name="endoffset" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="start_g" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="messages" type="tns:SoapMessageArray" minOccurs="0" nillable="true"/><xs:element name="errorcode" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="startoffset" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="mutationType" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="end_g" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="startmain" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="endmain" type="xs:integer" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="MutalyzerOutput"><xs:sequence><xs:element name="referenceId" type="xs:string"/><xs:element name="genomicDescription" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="sourceGi" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="rawVariants" type="tns:RawVariantArray" minOccurs="0" nillable="true"/><xs:element name="origMRNA" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="altProtein" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="errors" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="exons" type="tns:ExonInfoArray" minOccurs="0" nillable="true"/><xs:element name="sourceAccession" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="sourceVersion" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="mutated" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="mutatedMRNA" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="origCDS" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="warnings" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="molecule" type="xs:string"/><xs:element name="newCDS" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="chromDescription" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="newProtein" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="sourceId" type="xs:string"/><xs:element name="proteinDescriptions" type="tns:stringArray" minOccurs="0" nillable="true"/><xs:element name="messages" type="tns:SoapMessageArray" minOccurs="0" nillable="true"/><xs:element name="summary" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="transcriptDescriptions" type="tns:stringArray" minOccurs="0" nillable="true"/><xs:element name="origProtein" type="xs:string" minOccurs="0" nillable="true"/><xs:element name="original" type="xs:string" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="TranscriptInfo"><xs:sequence><xs:element name="linkMethod" type="xs:string"/><xs:element name="exons" type="tns:ExonInfoArray" minOccurs="0" nillable="true"/><xs:element name="cCDSStop" type="xs:string"/><xs:element name="chromTransStart" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="locusTag" type="xs:string"/><xs:element name="chromCDSStart" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="gTransStart" type="xs:integer"/><xs:element name="id" type="xs:string"/><xs:element name="cTransEnd" type="xs:string"/><xs:element name="cCDSStart" type="xs:string"/><xs:element name="chromTransEnd" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="gTransEnd" type="xs:integer"/><xs:element name="product" type="xs:string"/><xs:element name="proteinTranscript" type="tns:ProteinTranscript" minOccurs="0" nillable="true"/><xs:element name="sortableTransEnd" type="xs:integer"/><xs:element name="name" type="xs:string"/><xs:element name="chromCDSStop" type="xs:integer" minOccurs="0" nillable="true"/><xs:element name="gCDSStop" type="xs:integer"/><xs:element name="gCDSStart" type="xs:integer"/><xs:element name="cTransStart" type="xs:string"/></xs:sequence></xs:complexType><xs:complexType name="getCacheResponse"><xs:sequence><xs:element name="getCacheResult" type="tns:CacheEntryArray" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="getTranscriptsMappingResponse"><xs:sequence><xs:element name="getTranscriptsMappingResult" type="tns:TranscriptMappingInfoArray" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="TranscriptInfoArray"><xs:sequence><xs:element name="TranscriptInfo" type="tns:TranscriptInfo" minOccurs="0" maxOccurs="unbounded" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="descriptionExtractResponse"><xs:sequence><xs:element name="descriptionExtractResult" type="tns:Allele" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="mappingInfoResponse"><xs:sequence><xs:element name="mappingInfoResult" type="tns:Mapping" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="runMutalyzerResponse"><xs:sequence><xs:element name="runMutalyzerResult" type="tns:MutalyzerOutput" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:complexType name="getTranscriptsAndInfoResponse"><xs:sequence><xs:element name="getTranscriptsAndInfoResult" type="tns:TranscriptInfoArray" minOccurs="0" nillable="true"/></xs:sequence></xs:complexType><xs:element name="stringArray" type="tns:stringArray"/><xs:element name="SoapMessage" type="tns:SoapMessage"/><xs:element name="SoapMessageArray" type="tns:SoapMessageArray"/><xs:element name="ExonInfo" type="tns:ExonInfo"/><xs:element name="ExonInfoArray" type="tns:ExonInfoArray"/><xs:element name="info" type="tns:info"/><xs:element name="ping" type="tns:ping"/><xs:element name="CacheEntry" type="tns:CacheEntry"/><xs:element name="CheckSyntaxOutput" type="tns:CheckSyntaxOutput"/><xs:element name="GeneLocation" type="tns:GeneLocation"/><xs:element name="InfoOutput" type="tns:InfoOutput"/><xs:element name="ProteinTranscript" type="tns:ProteinTranscript"/><xs:element name="RawVar" type="tns:RawVar"/><xs:element name="RawVariant" type="tns:RawVariant"/><xs:element name="Transcript" type="tns:Transcript"/><xs:element name="TranscriptMappingInfo" type="tns:TranscriptMappingInfo"/><xs:element name="TranscriptNameInfo" type="tns:TranscriptNameInfo"/><xs:element name="checkSyntax" type="tns:checkSyntax"/><xs:element name="chromAccession" type="tns:chromAccession"/><xs:element name="chromAccessionResponse" type="tns:chromAccessionResponse"/><xs:element name="chromosomeName" type="tns:chromosomeName"/><xs:element name="chromosomeNameResponse" type="tns:chromosomeNameResponse"/><xs:element name="descriptionExtract" type="tns:descriptionExtract"/><xs:element name="getBatchJob" type="tns:getBatchJob"/><xs:element name="getBatchJobResponse" type="tns:getBatchJobResponse"/><xs:element name="getCache" type="tns:getCache"/><xs:element name="getGeneAndTranscript" type="tns:getGeneAndTranscript"/><xs:element name="getGeneLocation" type="tns:getGeneLocation"/><xs:element name="getGeneName" type="tns:getGeneName"/><xs:element name="getGeneNameResponse" type="tns:getGeneNameResponse"/><xs:element name="getTranscripts" type="tns:getTranscripts"/><xs:element name="getTranscriptsAndInfo" type="tns:getTranscriptsAndInfo"/><xs:element name="getTranscriptsByGeneName" type="tns:getTranscriptsByGeneName"/><xs:element name="getTranscriptsByGeneNameResponse" type="tns:getTranscriptsByGeneNameResponse"/><xs:element name="getTranscriptsMapping" type="tns:getTranscriptsMapping"/><xs:element name="getTranscriptsRange" type="tns:getTranscriptsRange"/><xs:element name="getTranscriptsRangeResponse" type="tns:getTranscriptsRangeResponse"/><xs:element name="getTranscriptsResponse" type="tns:getTranscriptsResponse"/><xs:element name="getchromName" type="tns:getchromName"/><xs:element name="getchromNameResponse" type="tns:getchromNameResponse"/><xs:element name="getdbSNPDescriptions" type="tns:getdbSNPDescriptions"/><xs:element name="getdbSNPDescriptionsResponse" type="tns:getdbSNPDescriptionsResponse"/><xs:element name="mappingInfo" type="tns:mappingInfo"/><xs:element name="monitorBatchJob" type="tns:monitorBatchJob"/><xs:element name="monitorBatchJobResponse" type="tns:monitorBatchJobResponse"/><xs:element name="numberConversion" type="tns:numberConversion"/><xs:element name="pingResponse" type="tns:pingResponse"/><xs:element name="runMutalyzer" type="tns:runMutalyzer"/><xs:element name="sliceChromosome" type="tns:sliceChromosome"/><xs:element name="sliceChromosomeByGene" type="tns:sliceChromosomeByGene"/><xs:element name="sliceChromosomeByGeneResponse" type="tns:sliceChromosomeByGeneResponse"/><xs:element name="sliceChromosomeResponse" type="tns:sliceChromosomeResponse"/><xs:element name="submitBatchJob" type="tns:submitBatchJob"/><xs:element name="submitBatchJobResponse" type="tns:submitBatchJobResponse"/><xs:element name="transcriptInfo" type="tns:transcriptInfo"/><xs:element name="uploadGenBankLocalFile" type="tns:uploadGenBankLocalFile"/><xs:element name="uploadGenBankLocalFileResponse" type="tns:uploadGenBankLocalFileResponse"/><xs:element name="uploadGenBankRemoteFile" type="tns:uploadGenBankRemoteFile"/><xs:element name="uploadGenBankRemoteFileResponse" type="tns:uploadGenBankRemoteFileResponse"/><xs:element name="TranscriptMappingInfoArray" type="tns:TranscriptMappingInfoArray"/><xs:element name="RawVariantArray" type="tns:RawVariantArray"/><xs:element name="RawVarArray" type="tns:RawVarArray"/><xs:element name="CacheEntryArray" type="tns:CacheEntryArray"/><xs:element name="checkSyntaxResponse" type="tns:checkSyntaxResponse"/><xs:element name="getGeneAndTranscriptResponse" type="tns:getGeneAndTranscriptResponse"/><xs:element name="getGeneLocationResponse" type="tns:getGeneLocationResponse"/><xs:element name="infoResponse" type="tns:infoResponse"/><xs:element name="numberConversionResponse" type="tns:numberConversionResponse"/><xs:element name="transcriptInfoResponse" type="tns:transcriptInfoResponse"/><xs:element name="Allele" type="tns:Allele"/><xs:element name="Mapping" type="tns:Mapping"/><xs:element name="MutalyzerOutput" type="tns:MutalyzerOutput"/><xs:element name="TranscriptInfo" type="tns:TranscriptInfo"/><xs:element name="getCacheResponse" type="tns:getCacheResponse"/><xs:element name="getTranscriptsMappingResponse" type="tns:getTranscriptsMappingResponse"/><xs:element name="TranscriptInfoArray" type="tns:TranscriptInfoArray"/><xs:element name="descriptionExtractResponse" type="tns:descriptionExtractResponse"/><xs:element name="mappingInfoResponse" type="tns:mappingInfoResponse"/><xs:element name="runMutalyzerResponse" type="tns:runMutalyzerResponse"/><xs:element name="getTranscriptsAndInfoResponse" type="tns:getTranscriptsAndInfoResponse"/></xs:schema></wsdl:types><wsdl:message name="mappingInfo"><wsdl:part name="mappingInfo" element="tns:mappingInfo"/></wsdl:message><wsdl:message name="mappingInfoResponse"><wsdl:part name="mappingInfoResponse" element="tns:mappingInfoResponse"/></wsdl:message><wsdl:message name="getGeneAndTranscript"><wsdl:part name="getGeneAndTranscript" element="tns:getGeneAndTranscript"/></wsdl:message><wsdl:message name="getGeneAndTranscriptResponse"><wsdl:part name="getGeneAndTranscriptResponse" element="tns:getGeneAndTranscriptResponse"/></wsdl:message><wsdl:message name="getTranscriptsAndInfo"><wsdl:part name="getTranscriptsAndInfo" element="tns:getTranscriptsAndInfo"/></wsdl:message><wsdl:message name="getTranscriptsAndInfoResponse"><wsdl:part name="getTranscriptsAndInfoResponse" element="tns:getTranscriptsAndInfoResponse"/></wsdl:message><wsdl:message name="numberConversion"><wsdl:part name="numberConversion" element="tns:numberConversion"/></wsdl:message><wsdl:message name="numberConversionResponse"><wsdl:part name="numberConversionResponse" element="tns:numberConversionResponse"/></wsdl:message><wsdl:message name="getTranscriptsByGeneName"><wsdl:part name="getTranscriptsByGeneName" element="tns:getTranscriptsByGeneName"/></wsdl:message><wsdl:message name="getTranscriptsByGeneNameResponse"><wsdl:part name="getTranscriptsByGeneNameResponse" element="tns:getTranscriptsByGeneNameResponse"/></wsdl:message><wsdl:message name="uploadGenBankRemoteFile"><wsdl:part name="uploadGenBankRemoteFile" element="tns:uploadGenBankRemoteFile"/></wsdl:message><wsdl:message name="uploadGenBankRemoteFileResponse"><wsdl:part name="uploadGenBankRemoteFileResponse" element="tns:uploadGenBankRemoteFileResponse"/></wsdl:message><wsdl:message name="ping"><wsdl:part name="ping" element="tns:ping"/></wsdl:message><wsdl:message name="pingResponse"><wsdl:part name="pingResponse" element="tns:pingResponse"/></wsdl:message><wsdl:message name="sliceChromosome"><wsdl:part name="sliceChromosome" element="tns:sliceChromosome"/></wsdl:message><wsdl:message name="sliceChromosomeResponse"><wsdl:part name="sliceChromosomeResponse" element="tns:sliceChromosomeResponse"/></wsdl:message><wsdl:message name="submitBatchJob"><wsdl:part name="submitBatchJob" element="tns:submitBatchJob"/></wsdl:message><wsdl:message name="submitBatchJobResponse"><wsdl:part name="submitBatchJobResponse" element="tns:submitBatchJobResponse"/></wsdl:message><wsdl:message name="uploadGenBankLocalFile"><wsdl:part name="uploadGenBankLocalFile" element="tns:uploadGenBankLocalFile"/></wsdl:message><wsdl:message name="uploadGenBankLocalFileResponse"><wsdl:part name="uploadGenBankLocalFileResponse" element="tns:uploadGenBankLocalFileResponse"/></wsdl:message><wsdl:message name="chromAccession"><wsdl:part name="chromAccession" element="tns:chromAccession"/></wsdl:message><wsdl:message name="chromAccessionResponse"><wsdl:part name="chromAccessionResponse" element="tns:chromAccessionResponse"/></wsdl:message><wsdl:message name="checkSyntax"><wsdl:part name="checkSyntax" element="tns:checkSyntax"/></wsdl:message><wsdl:message name="checkSyntaxResponse"><wsdl:part name="checkSyntaxResponse" element="tns:checkSyntaxResponse"/></wsdl:message><wsdl:message name="getGeneName"><wsdl:part name="getGeneName" element="tns:getGeneName"/></wsdl:message><wsdl:message name="getGeneNameResponse"><wsdl:part name="getGeneNameResponse" element="tns:getGeneNameResponse"/></wsdl:message><wsdl:message name="transcriptInfo"><wsdl:part name="transcriptInfo" element="tns:transcriptInfo"/></wsdl:message><wsdl:message name="transcriptInfoResponse"><wsdl:part name="transcriptInfoResponse" element="tns:transcriptInfoResponse"/></wsdl:message><wsdl:message name="getdbSNPDescriptions"><wsdl:part name="getdbSNPDescriptions" element="tns:getdbSNPDescriptions"/></wsdl:message><wsdl:message name="getdbSNPDescriptionsResponse"><wsdl:part name="getdbSNPDescriptionsResponse" element="tns:getdbSNPDescriptionsResponse"/></wsdl:message><wsdl:message name="descriptionExtract"><wsdl:part name="descriptionExtract" element="tns:descriptionExtract"/></wsdl:message><wsdl:message name="descriptionExtractResponse"><wsdl:part name="descriptionExtractResponse" element="tns:descriptionExtractResponse"/></wsdl:message><wsdl:message name="getchromName"><wsdl:part name="getchromName" element="tns:getchromName"/></wsdl:message><wsdl:message name="getchromNameResponse"><wsdl:part name="getchromNameResponse" element="tns:getchromNameResponse"/></wsdl:message><wsdl:message name="runMutalyzer"><wsdl:part name="runMutalyzer" element="tns:runMutalyzer"/></wsdl:message><wsdl:message name="runMutalyzerResponse"><wsdl:part name="runMutalyzerResponse" element="tns:runMutalyzerResponse"/></wsdl:message><wsdl:message name="getTranscriptsMapping"><wsdl:part name="getTranscriptsMapping" element="tns:getTranscriptsMapping"/></wsdl:message><wsdl:message name="getTranscriptsMappingResponse"><wsdl:part name="getTranscriptsMappingResponse" element="tns:getTranscriptsMappingResponse"/></wsdl:message><wsdl:message name="getBatchJob"><wsdl:part name="getBatchJob" element="tns:getBatchJob"/></wsdl:message><wsdl:message name="getBatchJobResponse"><wsdl:part name="getBatchJobResponse" element="tns:getBatchJobResponse"/></wsdl:message><wsdl:message name="getCache"><wsdl:part name="getCache" element="tns:getCache"/></wsdl:message><wsdl:message name="getCacheResponse"><wsdl:part name="getCacheResponse" element="tns:getCacheResponse"/></wsdl:message><wsdl:message name="getTranscripts"><wsdl:part name="getTranscripts" element="tns:getTranscripts"/></wsdl:message><wsdl:message name="getTranscriptsResponse"><wsdl:part name="getTranscriptsResponse" element="tns:getTranscriptsResponse"/></wsdl:message><wsdl:message name="info"><wsdl:part name="info" element="tns:info"/></wsdl:message><wsdl:message name="infoResponse"><wsdl:part name="infoResponse" element="tns:infoResponse"/></wsdl:message><wsdl:message name="sliceChromosomeByGene"><wsdl:part name="sliceChromosomeByGene" element="tns:sliceChromosomeByGene"/></wsdl:message><wsdl:message name="sliceChromosomeByGeneResponse"><wsdl:part name="sliceChromosomeByGeneResponse" element="tns:sliceChromosomeByGeneResponse"/></wsdl:message><wsdl:message name="getTranscriptsRange"><wsdl:part name="getTranscriptsRange" element="tns:getTranscriptsRange"/></wsdl:message><wsdl:message name="getTranscriptsRangeResponse"><wsdl:part name="getTranscriptsRangeResponse" element="tns:getTranscriptsRangeResponse"/></wsdl:message><wsdl:message name="chromosomeName"><wsdl:part name="chromosomeName" element="tns:chromosomeName"/></wsdl:message><wsdl:message name="chromosomeNameResponse"><wsdl:part name="chromosomeNameResponse" element="tns:chromosomeNameResponse"/></wsdl:message><wsdl:message name="monitorBatchJob"><wsdl:part name="monitorBatchJob" element="tns:monitorBatchJob"/></wsdl:message><wsdl:message name="monitorBatchJobResponse"><wsdl:part name="monitorBatchJobResponse" element="tns:monitorBatchJobResponse"/></wsdl:message><wsdl:message name="getGeneLocation"><wsdl:part name="getGeneLocation" element="tns:getGeneLocation"/></wsdl:message><wsdl:message name="getGeneLocationResponse"><wsdl:part name="getGeneLocationResponse" element="tns:getGeneLocationResponse"/></wsdl:message><wsdl:service name="MutalyzerService"><wsdl:port name="Mutalyzer" binding="tns:Mutalyzer"><soap:address location="https://mutalyzer.nl/services/"/></wsdl:port></wsdl:service><wsdl:portType name="Mutalyzer"><wsdl:operation name="mappingInfo" parameterOrder="mappingInfo"><wsdl:documentation>
+        Search for an NM number in the MySQL database, if the version
+        number matches, get the start and end positions in a variant and
+        translate these positions to I{g.} notation if the variant is in I{c.}
+        notation and vice versa.
+
+          - If no end position is present, the start position is assumed to be
+            the end position.
+          - If the version number is not found in the database, an error
+            message is generated and a suggestion for an other version is
+            given.
+          - If the reference sequence is not found at all, an error is
+            returned.
+          - If no variant is present, an error is returned.
+          - If the variant is not accepted by the nomenclature parser, a parse
+            error will be printed.
+
+        @arg LOVD_ver: The LOVD version.
+        @type LOVD_ver: string
+        @arg build: The genome build (hg19, hg18, mm10).
+        @type build: string
+        @arg accNo: The NM accession number and version.
+        @type accNo: string
+        @arg variant: The variant.
+        @type variant: string
+
+        @return: Complex object:
+          - start_main   ; The main coordinate of the start position
+                           in I{c.} (non-star) notation.
+          - start_offset ; The offset coordinate of the start position
+                           in I{c.} notation (intronic position).
+          - end_main     ; The main coordinate of the end position in
+                           I{c.} (non-star) notation.
+          - end_offset   ; The offset coordinate of the end position in
+                           I{c.} notation (intronic position).
+          - start_g      ; The I{g.} notation of the start position.
+          - end_g        ; The I{g.} notation of the end position.
+          - type         ; The mutation type.
+        @rtype: object
+        </wsdl:documentation><wsdl:input name="mappingInfo" message="tns:mappingInfo"/><wsdl:output name="mappingInfoResponse" message="tns:mappingInfoResponse"/></wsdl:operation><wsdl:operation name="getGeneAndTranscript" parameterOrder="getGeneAndTranscript"><wsdl:documentation>
+        Todo: documentation.
+        </wsdl:documentation><wsdl:input name="getGeneAndTranscript" message="tns:getGeneAndTranscript"/><wsdl:output name="getGeneAndTranscriptResponse" message="tns:getGeneAndTranscriptResponse"/></wsdl:operation><wsdl:operation name="getTranscriptsAndInfo" parameterOrder="getTranscriptsAndInfo"><wsdl:documentation>
+        Given a genomic reference, return all its transcripts with their
+        transcription/cds start/end sites and exons.
+
+        @arg genomicReference: Name of a reference sequence.
+        @type genomicReference: string
+
+        @arg geneName: Name of gene to restrict returned transcripts to.
+                       Default is to return all transcripts.
+        @type geneName: string
+
+        @return: Array of TranscriptInfo objects with fields:
+                 - name
+                 - id
+                 - product
+                 - cTransStart
+                 - gTransStart
+                 - chromTransStart
+                 - cTransEnd
+                 - gTransEnd
+                 - chromTransEnd
+                 - sortableTransEnd
+                 - cCDSStart
+                 - gCDSStart
+                 - chromCDSStart
+                 - cCDSStop
+                 - gCDSStop
+                 - chromCDSStop
+                 - locusTag
+                 - linkMethod
+                 - exons: Array of ExonInfo objects with fields:
+                          - cStart
+                          - gStart
+                          - chromStart
+                          - cStop
+                          - gStop
+                          - chromStop
+                 - proteinTranscript: ProteinTranscript object with fields:
+                                      - name
+                                      - id
+                                      - product
+        </wsdl:documentation><wsdl:input name="getTranscriptsAndInfo" message="tns:getTranscriptsAndInfo"/><wsdl:output name="getTranscriptsAndInfoResponse" message="tns:getTranscriptsAndInfoResponse"/></wsdl:operation><wsdl:operation name="numberConversion" parameterOrder="numberConversion"><wsdl:documentation>
+        Converts I{c.} to I{g.} notation or vice versa
+
+        @arg build: The genome build (hg19, hg18, mm10).
+        @type build: string
+        @arg variant: The variant in either I{c.} or I{g.} notation, full HGVS
+            notation, including NM_ or NC_ accession number.
+        @type variant: string
+        @kwarg gene: Optional gene name. If given, return variant descriptions
+            on all transcripts for this gene.
+        @type gene: string
+
+        @return: The variant(s) in either I{g.} or I{c.} notation.
+        @rtype: list
+        </wsdl:documentation><wsdl:input name="numberConversion" message="tns:numberConversion"/><wsdl:output name="numberConversionResponse" message="tns:numberConversionResponse"/></wsdl:operation><wsdl:operation name="getTranscriptsByGeneName" parameterOrder="getTranscriptsByGeneName"><wsdl:documentation>
+        Todo: documentation.
+        </wsdl:documentation><wsdl:input name="getTranscriptsByGeneName" message="tns:getTranscriptsByGeneName"/><wsdl:output name="getTranscriptsByGeneNameResponse" message="tns:getTranscriptsByGeneNameResponse"/></wsdl:operation><wsdl:operation name="uploadGenBankRemoteFile" parameterOrder="uploadGenBankRemoteFile"><wsdl:documentation>
+        Not implemented yet.
+        </wsdl:documentation><wsdl:input name="uploadGenBankRemoteFile" message="tns:uploadGenBankRemoteFile"/><wsdl:output name="uploadGenBankRemoteFileResponse" message="tns:uploadGenBankRemoteFileResponse"/></wsdl:operation><wsdl:operation name="ping" parameterOrder="ping"><wsdl:documentation>
+        Simple function to test the interface.
+
+        @return: Always the value 'pong'.
+        @rtype: string
+        </wsdl:documentation><wsdl:input name="ping" message="tns:ping"/><wsdl:output name="pingResponse" message="tns:pingResponse"/></wsdl:operation><wsdl:operation name="sliceChromosome" parameterOrder="sliceChromosome"><wsdl:documentation>
+        Retrieve a range of a chromosome by accession number.
+
+        @arg chromAccNo: Chromosome or contig by accession number.
+        @type chromAccNo: string
+        @arg start: Start position (one-based, inclusive, in reference
+          orientation).
+        @type start: integer
+        @arg stop: Stop position (one-based, inclusive, in reference
+          orientation).
+        @type start: integer
+        @arg orientation: Orientation of the slice. 1 for forward, 2 for
+          reverse complement.
+        @type orientation: integer
+        </wsdl:documentation><wsdl:input name="sliceChromosome" message="tns:sliceChromosome"/><wsdl:output name="sliceChromosomeResponse" message="tns:sliceChromosomeResponse"/></wsdl:operation><wsdl:operation name="submitBatchJob" parameterOrder="submitBatchJob"><wsdl:documentation>
+        Submit a batch job.
+
+        Input and output file formats for batch jobs are explained on the
+        website &lt;https://mutalyzer.nl/batch&gt;.
+
+        On error an exception is raised:
+          - detail: Human readable description of the error.
+          - faultstring: A code to indicate the type of error.
+              - EPARSE: The batch input could not be parsed.
+              - EMAXSIZE: Input file exceeds maximum size.
+
+        @arg data: Input file (base64 encoded).
+        @arg process: Optional type of the batch job, choose from: NameChecker
+            (default), SyntaxChecker, PositionConverter, SnpConverter.
+        @arg argument: Additional argument. Currently only used if batch_type
+            is PositionConverter, denoting the human genome build.
+
+        @return: Batch job identifier.
+        </wsdl:documentation><wsdl:input name="submitBatchJob" message="tns:submitBatchJob"/><wsdl:output name="submitBatchJobResponse" message="tns:submitBatchJobResponse"/></wsdl:operation><wsdl:operation name="uploadGenBankLocalFile" parameterOrder="uploadGenBankLocalFile"><wsdl:documentation>
+        Upload a genbank file.
+
+        @arg data: Genbank file (UTF-8, base64 encoded).
+        @return: UD accession number for the uploaded genbank file.
+        </wsdl:documentation><wsdl:input name="uploadGenBankLocalFile" message="tns:uploadGenBankLocalFile"/><wsdl:output name="uploadGenBankLocalFileResponse" message="tns:uploadGenBankLocalFileResponse"/></wsdl:operation><wsdl:operation name="chromAccession" parameterOrder="chromAccession"><wsdl:documentation>
+        Get the accession number of a chromosome, given a name.
+
+        @arg build: The genome build (hg19, hg18, mm10).
+        @type build: string
+        @arg name: The name of a chromosome (e.g. chr1).
+        @type name: string
+
+        @return: The accession number of a chromosome.
+        @rtype: string
+        </wsdl:documentation><wsdl:input name="chromAccession" message="tns:chromAccession"/><wsdl:output name="chromAccessionResponse" message="tns:chromAccessionResponse"/></wsdl:operation><wsdl:operation name="checkSyntax" parameterOrder="checkSyntax"><wsdl:documentation>
+        Checks the syntax of a variant.
+
+        @arg variant: The variant to check.
+        @type variant: string
+
+        @return: Object with fields:
+                 - valid: A boolean indicating parse result (true for
+                          succes, false in case of a parse error).
+                 - messages: List of (error) messages as strings.
+        @rtype: object
+        </wsdl:documentation><wsdl:input name="checkSyntax" message="tns:checkSyntax"/><wsdl:output name="checkSyntaxResponse" message="tns:checkSyntaxResponse"/></wsdl:operation><wsdl:operation name="getGeneName" parameterOrder="getGeneName"><wsdl:documentation>
+        Find the gene name associated with a transcript.
+
+        @arg build: The genome build (hg19, hg18, mm10).
+        @type build: string
+        @arg accno: The identifier of a transcript.
+        @type accno: string
+
+        @return: The name of the associated gene.
+        @rtype: string
+        </wsdl:documentation><wsdl:input name="getGeneName" message="tns:getGeneName"/><wsdl:output name="getGeneNameResponse" message="tns:getGeneNameResponse"/></wsdl:operation><wsdl:operation name="transcriptInfo" parameterOrder="transcriptInfo"><wsdl:documentation>
+        Search for an NM number in the MySQL database, if the version
+        number matches, the transcription start and end and CDS end
+        in I{c.} notation is returned.
+
+        @arg LOVD_ver: The LOVD version.
+        @type LOVD_ver: string
+        @arg build: The genome build (hg19, hg18, mm10).
+        @type build: string
+        @arg accNo: The NM accession number and version.
+        @type accNo: string
+
+        @return: Complex object:
+          - trans_start  ; Transcription start in I{c.} notation.
+          - trans_stop   ; Transcription stop in I{c.} notation.
+          - CDS_stop     ; CDS stop in I{c.} notation.
+        @rtype: object
+        </wsdl:documentation><wsdl:input name="transcriptInfo" message="tns:transcriptInfo"/><wsdl:output name="transcriptInfoResponse" message="tns:transcriptInfoResponse"/></wsdl:operation><wsdl:operation name="getdbSNPDescriptions" parameterOrder="getdbSNPDescriptions"><wsdl:documentation>
+        Lookup HGVS descriptions for a dbSNP rs identifier.
+
+        @arg rs_id: The dbSNP rs identifier, e.g. 'rs9919552'.
+        @type rs_id: string
+
+        @return: List of HGVS descriptions.
+        @rtype: list(string)
+        </wsdl:documentation><wsdl:input name="getdbSNPDescriptions" message="tns:getdbSNPDescriptions"/><wsdl:output name="getdbSNPDescriptionsResponse" message="tns:getdbSNPDescriptionsResponse"/></wsdl:operation><wsdl:operation name="descriptionExtract" parameterOrder="descriptionExtract"><wsdl:documentation>
+        Extract the HGVS variant description from a reference sequence and an
+        observed sequence.
+
+        Note that this only works on DNA sequences for now.
+        </wsdl:documentation><wsdl:input name="descriptionExtract" message="tns:descriptionExtract"/><wsdl:output name="descriptionExtractResponse" message="tns:descriptionExtractResponse"/></wsdl:operation><wsdl:operation name="getchromName" parameterOrder="getchromName"><wsdl:documentation>
+        Get the chromosome name, given a transcript identifier (NM number).
+
+        @arg build: The genome build (hg19, hg18, mm10).
+        @type build: string
+        @arg acc: The NM accession number (version NOT included).
+        @type acc: string
+
+        @return: The name of a chromosome.
+        @rtype: string
+        </wsdl:documentation><wsdl:input name="getchromName" message="tns:getchromName"/><wsdl:output name="getchromNameResponse" message="tns:getchromNameResponse"/></wsdl:operation><wsdl:operation name="runMutalyzer" parameterOrder="runMutalyzer"><wsdl:documentation>
+        Run the Mutalyzer name checker.
+
+        @arg variant: The variant description to check.
+        @type variant: string
+
+        @return: Object with fields:
+            - referenceId: Identifier of the reference sequence used.
+            - sourceId: Identifier of the reference sequence source, e.g. the
+                chromosomal accession number and version in case referenceId
+                is a  UD reference created as a chromosomal slice.
+            - sourceAccession: Accession number of the reference sequence
+                source (only for genbank references).
+            - sourceVersion: Version number of the reference sequence source
+                (only for genbank references).
+            - sourceGi: GI number of the reference sequence source (only for
+                genbank references).
+            - molecule: Molecular type of the reference sequence.
+            - original: Original sequence.
+            - mutated: Mutated sequence.
+            - origMRNA: Original transcript sequence.
+            - mutatedMRNA: Mutated transcript sequence.
+            - origCDS: Original CDS.
+            - newCDS: Mutated CDS.
+            - origProtein: Original protein sequence.
+            - newProtein: Mutated protein sequence.
+            - altProtein: Alternative mutated protein sequence.
+            - errors: Number of errors.
+            - warnings: Number of warnings.
+            - summary: Summary of messages.
+            - chromDescription: Chromosomal description.
+            - genomicDescription: Genomic description.
+            - transcriptDescriptions: List of transcript descriptions.
+            - proteinDescriptions: List of protein descriptions.
+            - rawVariants: List of raw variants where each raw variant is
+                represented by an object with fields:
+                - description: Description of the raw variant.
+                - visualisation: ASCII visualisation of the raw variant.
+            - exons: If a transcript is selected, array of ExonInfo objects
+                for each exon in the selected transcript with fields:
+                - cStart
+                - gStart
+                - cStop
+                - gStop
+            - messages: List of (error) messages.
+        </wsdl:documentation><wsdl:input name="runMutalyzer" message="tns:runMutalyzer"/><wsdl:output name="runMutalyzerResponse" message="tns:runMutalyzerResponse"/></wsdl:operation><wsdl:operation name="getTranscriptsMapping" parameterOrder="getTranscriptsMapping"><wsdl:documentation>
+        Get all the transcripts and their info that overlap with a range on a
+        chromosome.
+
+        The range should be provided as one-based, inclusive positions.
+
+        @arg build: The genome build (hg19, hg18, mm10).
+        @type build: string
+        @arg chrom: A chromosome encoded as "chr1", ..., "chrY".
+        @type chrom: string
+        @arg pos1: The first postion of the range.
+        @type pos1: integer
+        @arg pos2: The last postion of the range.
+        @type pos2: integer
+        @arg method: The method of determining overlap:
+            - 0 ; Return only the transcripts that completely fall in the range
+                  [pos1, pos2].
+            - 1 ; Return all hit transcripts.
+
+        @return: Array of TranscriptMappingInfo objects with fields:
+                 - name
+                 - version
+                 - gene
+                 - orientation
+                 - start
+                 - stop
+                 - cds_start
+                 - cds_stop
+        All returned ranges are one-based, inclusive, and in gene
+        orientation.
+        </wsdl:documentation><wsdl:input name="getTranscriptsMapping" message="tns:getTranscriptsMapping"/><wsdl:output name="getTranscriptsMappingResponse" message="tns:getTranscriptsMappingResponse"/></wsdl:operation><wsdl:operation name="getBatchJob" parameterOrder="getBatchJob"><wsdl:documentation>
+        Get the result of a batch job.
+
+        Input and output file formats for batch jobs are explained on the
+        website &lt;https://mutalyzer.nl/batch&gt;.
+
+        On error an exception is raised:
+          - detail: Human readable description of the error.
+          - faultstring: A code to indicate the type of error.
+              - EBATCHNOTREADY: The batch job result is not yet ready.
+
+        @arg job_id: Batch job identifier.
+
+        @return: Batch job result file (UTF-8, base64 encoded).
+        </wsdl:documentation><wsdl:input name="getBatchJob" message="tns:getBatchJob"/><wsdl:output name="getBatchJobResponse" message="tns:getBatchJobResponse"/></wsdl:operation><wsdl:operation name="getCache" parameterOrder="getCache"><wsdl:documentation>
+        Get a list of entries from the local cache created since given date.
+
+        This method is intended to be used by Mutalyzer itself to synchronize
+        the cache between installations on different servers.
+        </wsdl:documentation><wsdl:input name="getCache" message="tns:getCache"/><wsdl:output name="getCacheResponse" message="tns:getCacheResponse"/></wsdl:operation><wsdl:operation name="getTranscripts" parameterOrder="getTranscripts"><wsdl:documentation>
+        Get all the transcripts that overlap with a chromosomal position.
+
+        On error an exception is raised:
+          - detail       ; Human readable description of the error.
+          - faultstring: ; A code to indicate the type of error.
+              - EARG   ; The argument was not valid.
+              - ERANGE ; An invalid range was given.
+
+        @arg build: The genome build (hg19, hg18, mm10).
+        @type build: string
+        @arg chrom: A chromosome encoded as "chr1", ..., "chrY".
+        @type chrom: string
+        @arg pos: A position on the chromosome (one-based).
+        @type pos: int
+        @kwarg versions: If set to True, also include transcript versions.
+        @type versions: bool
+
+        @return: A list of transcripts.
+        @rtype: list
+        </wsdl:documentation><wsdl:input name="getTranscripts" message="tns:getTranscripts"/><wsdl:output name="getTranscriptsResponse" message="tns:getTranscriptsResponse"/></wsdl:operation><wsdl:operation name="info" parameterOrder="info"><wsdl:documentation>
+        Gives some static application information, such as the current running
+        version.
+
+        @return: Object with fields:
+            - version: A string of the current running version.
+            - versionParts: The parts of the current running version as a list
+                of strings.
+            - releaseDate: The release date for the running version as a
+                string, or the empty string in case of a development version.
+            - nomenclatureVersion: Version of the HGVS nomenclature used.
+            - nomenclatureVersionParts: The parts of the HGVS nomenclature
+                version as a list of strings.
+            - serverName: The name of the server that is being queried.
+            - contactEmail: The email address to contact for more information.
+            - announcement: Announcement body text.
+            - announcementUrl: URL to go with the announcement for further
+                information.
+        @rtype: object
+        </wsdl:documentation><wsdl:input name="info" message="tns:info"/><wsdl:output name="infoResponse" message="tns:infoResponse"/></wsdl:operation><wsdl:operation name="sliceChromosomeByGene" parameterOrder="sliceChromosomeByGene"><wsdl:documentation>
+        Retrieve part of the reference genome for a (HGNC) gene symbol.
+
+        @arg geneSymbol: Gene symbol.
+        @type geneSymbol: string
+        @arg organism: Organism name without spaces.
+        @type organism: string
+        @arg upStream: Number of 5' flanking bases to include.
+        @type upStream: integer
+        @arg downStream: Number of 3' flanking bases to include.
+        @type upStream: integer
+
+        This uses the NCBI Entrez search engine and is therefore based on the
+        current Entrez assembly for the given organism.
+
+        @return: UD accession number for created slice.
+        </wsdl:documentation><wsdl:input name="sliceChromosomeByGene" message="tns:sliceChromosomeByGene"/><wsdl:output name="sliceChromosomeByGeneResponse" message="tns:sliceChromosomeByGeneResponse"/></wsdl:operation><wsdl:operation name="getTranscriptsRange" parameterOrder="getTranscriptsRange"><wsdl:documentation>
+        Get all the transcripts that overlap with a range on a chromosome.
+
+        The range should be provided as one-based, inclusive positions.
+
+        @arg build: The genome build (hg19, hg18, mm10).
+        @type build: string
+        @arg chrom: A chromosome encoded as "chr1", ..., "chrY".
+        @type chrom: string
+        @arg pos1: The first postion of the range.
+        @type pos1: integer
+        @arg pos2: The last postion of the range.
+        @type pos2: integer
+        @arg method: The method of determining overlap:
+            - 0 ; Return only the transcripts that completely fall in the range
+                  [pos1, pos2].
+            - 1 ; Return all hit transcripts.
+
+        @return: A list of transcripts.
+        @rtype: list
+        </wsdl:documentation><wsdl:input name="getTranscriptsRange" message="tns:getTranscriptsRange"/><wsdl:output name="getTranscriptsRangeResponse" message="tns:getTranscriptsRangeResponse"/></wsdl:operation><wsdl:operation name="chromosomeName" parameterOrder="chromosomeName"><wsdl:documentation>
+        Get the name of a chromosome, given a chromosome accession number.
+
+        @arg build: The genome build (hg19, hg18, mm10).
+        @type build: string
+        @arg accNo: The accession number of a chromosome (NC_...).
+        @type accNo: string
+
+        @return: The name of a chromosome.
+        @rtype: string
+        </wsdl:documentation><wsdl:input name="chromosomeName" message="tns:chromosomeName"/><wsdl:output name="chromosomeNameResponse" message="tns:chromosomeNameResponse"/></wsdl:operation><wsdl:operation name="monitorBatchJob" parameterOrder="monitorBatchJob"><wsdl:documentation>
+        Get the number of entries left for a batch job.
+
+        Input and output file formats for batch jobs are explained on the
+        website &lt;https://mutalyzer.nl/batch&gt;.
+
+        @arg job_id: Batch job identifier.
+
+        @return: Number of entries left.
+        </wsdl:documentation><wsdl:input name="monitorBatchJob" message="tns:monitorBatchJob"/><wsdl:output name="monitorBatchJobResponse" message="tns:monitorBatchJobResponse"/></wsdl:operation><wsdl:operation name="getGeneLocation" parameterOrder="getGeneLocation"><wsdl:documentation>
+        Get the location of a gene on the given genome build (assembly), using
+        the system's transcript mapping database.
+
+        @arg gene: Gene symbol.
+        @type gene: string
+        @arg build: Genome build (assembly) by name or alias. If omited,
+          the system's default assembly is used.
+        @type build: string
+
+        @return: Object with the following fields:
+          - gene: Gene symbol.
+          - start: Gene start position (one-based, inclusive, in chromosomal
+              orientation). If multiple transcripts for the gene are known,
+              this contains the lowest start position.
+          - stop: Gene stop position (one-based, inclusive, in chromosomal
+              orientation). If multiple transcripts for the gene are known,
+              this contains the highest stop position.
+          - orientation: Gene orientation, either 'forward' or 'reverse'.
+          - chromosome_name: Gene chromosome by name (e.g., 'chrX').
+          - chromosome_accession: Gene chromosome by accession (e.g.,
+              'NC_000023.10').
+          - assembly_name: Selected genome build (assembly) by name (e.g.,
+              'GRCh37').
+          - assembly_alias: Selected genome build (assembly) by alias (e.g.,
+              'hg19').
+        </wsdl:documentation><wsdl:input name="getGeneLocation" message="tns:getGeneLocation"/><wsdl:output name="getGeneLocationResponse" message="tns:getGeneLocationResponse"/></wsdl:operation></wsdl:portType><wsdl:binding name="Mutalyzer" type="tns:Mutalyzer"><soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/><wsdl:operation name="mappingInfo"><soap:operation soapAction="mappingInfo" style="document"/><wsdl:input name="mappingInfo"><soap:body use="literal"/></wsdl:input><wsdl:output name="mappingInfoResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="getGeneAndTranscript"><soap:operation soapAction="getGeneAndTranscript" style="document"/><wsdl:input name="getGeneAndTranscript"><soap:body use="literal"/></wsdl:input><wsdl:output name="getGeneAndTranscriptResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="getTranscriptsAndInfo"><soap:operation soapAction="getTranscriptsAndInfo" style="document"/><wsdl:input name="getTranscriptsAndInfo"><soap:body use="literal"/></wsdl:input><wsdl:output name="getTranscriptsAndInfoResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="numberConversion"><soap:operation soapAction="numberConversion" style="document"/><wsdl:input name="numberConversion"><soap:body use="literal"/></wsdl:input><wsdl:output name="numberConversionResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="getTranscriptsByGeneName"><soap:operation soapAction="getTranscriptsByGeneName" style="document"/><wsdl:input name="getTranscriptsByGeneName"><soap:body use="literal"/></wsdl:input><wsdl:output name="getTranscriptsByGeneNameResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="uploadGenBankRemoteFile"><soap:operation soapAction="uploadGenBankRemoteFile" style="document"/><wsdl:input name="uploadGenBankRemoteFile"><soap:body use="literal"/></wsdl:input><wsdl:output name="uploadGenBankRemoteFileResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="ping"><soap:operation soapAction="ping" style="document"/><wsdl:input name="ping"><soap:body use="literal"/></wsdl:input><wsdl:output name="pingResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="sliceChromosome"><soap:operation soapAction="sliceChromosome" style="document"/><wsdl:input name="sliceChromosome"><soap:body use="literal"/></wsdl:input><wsdl:output name="sliceChromosomeResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="submitBatchJob"><soap:operation soapAction="submitBatchJob" style="document"/><wsdl:input name="submitBatchJob"><soap:body use="literal"/></wsdl:input><wsdl:output name="submitBatchJobResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="uploadGenBankLocalFile"><soap:operation soapAction="uploadGenBankLocalFile" style="document"/><wsdl:input name="uploadGenBankLocalFile"><soap:body use="literal"/></wsdl:input><wsdl:output name="uploadGenBankLocalFileResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="chromAccession"><soap:operation soapAction="chromAccession" style="document"/><wsdl:input name="chromAccession"><soap:body use="literal"/></wsdl:input><wsdl:output name="chromAccessionResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="checkSyntax"><soap:operation soapAction="checkSyntax" style="document"/><wsdl:input name="checkSyntax"><soap:body use="literal"/></wsdl:input><wsdl:output name="checkSyntaxResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="getGeneName"><soap:operation soapAction="getGeneName" style="document"/><wsdl:input name="getGeneName"><soap:body use="literal"/></wsdl:input><wsdl:output name="getGeneNameResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="transcriptInfo"><soap:operation soapAction="transcriptInfo" style="document"/><wsdl:input name="transcriptInfo"><soap:body use="literal"/></wsdl:input><wsdl:output name="transcriptInfoResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="getdbSNPDescriptions"><soap:operation soapAction="getdbSNPDescriptions" style="document"/><wsdl:input name="getdbSNPDescriptions"><soap:body use="literal"/></wsdl:input><wsdl:output name="getdbSNPDescriptionsResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="descriptionExtract"><soap:operation soapAction="descriptionExtract" style="document"/><wsdl:input name="descriptionExtract"><soap:body use="literal"/></wsdl:input><wsdl:output name="descriptionExtractResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="getchromName"><soap:operation soapAction="getchromName" style="document"/><wsdl:input name="getchromName"><soap:body use="literal"/></wsdl:input><wsdl:output name="getchromNameResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="runMutalyzer"><soap:operation soapAction="runMutalyzer" style="document"/><wsdl:input name="runMutalyzer"><soap:body use="literal"/></wsdl:input><wsdl:output name="runMutalyzerResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="getTranscriptsMapping"><soap:operation soapAction="getTranscriptsMapping" style="document"/><wsdl:input name="getTranscriptsMapping"><soap:body use="literal"/></wsdl:input><wsdl:output name="getTranscriptsMappingResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="getBatchJob"><soap:operation soapAction="getBatchJob" style="document"/><wsdl:input name="getBatchJob"><soap:body use="literal"/></wsdl:input><wsdl:output name="getBatchJobResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="getCache"><soap:operation soapAction="getCache" style="document"/><wsdl:input name="getCache"><soap:body use="literal"/></wsdl:input><wsdl:output name="getCacheResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="getTranscripts"><soap:operation soapAction="getTranscripts" style="document"/><wsdl:input name="getTranscripts"><soap:body use="literal"/></wsdl:input><wsdl:output name="getTranscriptsResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="info"><soap:operation soapAction="info" style="document"/><wsdl:input name="info"><soap:body use="literal"/></wsdl:input><wsdl:output name="infoResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="sliceChromosomeByGene"><soap:operation soapAction="sliceChromosomeByGene" style="document"/><wsdl:input name="sliceChromosomeByGene"><soap:body use="literal"/></wsdl:input><wsdl:output name="sliceChromosomeByGeneResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="getTranscriptsRange"><soap:operation soapAction="getTranscriptsRange" style="document"/><wsdl:input name="getTranscriptsRange"><soap:body use="literal"/></wsdl:input><wsdl:output name="getTranscriptsRangeResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="chromosomeName"><soap:operation soapAction="chromosomeName" style="document"/><wsdl:input name="chromosomeName"><soap:body use="literal"/></wsdl:input><wsdl:output name="chromosomeNameResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="monitorBatchJob"><soap:operation soapAction="monitorBatchJob" style="document"/><wsdl:input name="monitorBatchJob"><soap:body use="literal"/></wsdl:input><wsdl:output name="monitorBatchJobResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation><wsdl:operation name="getGeneLocation"><soap:operation soapAction="getGeneLocation" style="document"/><wsdl:input name="getGeneLocation"><soap:body use="literal"/></wsdl:input><wsdl:output name="getGeneLocationResponse"><soap:body use="literal"/></wsdl:output></wsdl:operation></wsdl:binding></wsdl:definitions>
