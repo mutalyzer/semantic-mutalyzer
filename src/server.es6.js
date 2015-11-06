@@ -66,14 +66,14 @@ let operations = {
 
 		/* handle alternative requested output mime-types */
 		if (mimeType === 'text/turtle') {
-			let context = _.cloneDeep({ ...params, ...runMutalyzerResult}, (val, key) => {
-				if (_.isString(val)) { return val.replace(/\./g, '\\.') }
-				//if (key === 'referenceId') {
-				//	// als het begint met LRG_, dan een getal, dan 't'+ getal (optioneel),
-				//	// haal 't'getal ervanaf voor de IRI
-				//}
-			});
-			runMutalyzerResult = ttl.runMutalyzer(context);
+			runMutalyzerResult = ttl.runMutalyzer(_.cloneDeep(
+				{...params, ...runMutalyzerResult},
+				(val, key) => {
+					if (_.isString(val)) {
+						return val.replace(/\./g, '\\.')
+					}
+				}
+			));
 		}
 
 		/* send the result */
@@ -92,8 +92,8 @@ class MutalyzerError extends Error {
 	constructor({errorcode, message}) {
 		super(message);
 		this.message = message;
-		this.status  = BAD_REQUEST;
-		this.code    = errorcode;
+		this.status = BAD_REQUEST;
+		this.code = errorcode;
 	}
 }
 
@@ -122,8 +122,8 @@ function errorNormalizer(err, req, res, next) {
 			}
 		}
 		return next({
-			info:    properties,
-			status:  err.status,
+			info: properties,
+			status: err.status,
 			message: messages.map(msg => msg.replace(/"([\w\d\-_\s]+?)"/g, "'$1'")).join(' ')
 			//       ^ we like single-quoted strings
 		});
@@ -131,8 +131,8 @@ function errorNormalizer(err, req, res, next) {
 
 	/* any other errors */
 	return next({
-		status:        INTERNAL_SERVER_ERROR,
-		message:       "An error occurred on the server that we did not expect. Please let us know!",
+		status: INTERNAL_SERVER_ERROR,
+		message: "An error occurred on the server that we did not expect. Please let us know!",
 		originalError: err
 	});
 
@@ -151,7 +151,8 @@ function errorTransmitter(err, req, res, next) {
 }
 
 /* done with error */
-function doneWithError(err, req, res, next) {}
+function doneWithError(err, req, res, next) {
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,12 +171,12 @@ export default async (distDir, {soapUrl, consoleLogging}) => {
 	let [middleware, swagger] = await swaggerMiddleware(`${distDir}/swagger.json`, server);
 
 	/* serve swagger-ui based documentation */
-	server.use(favicon('dist/'+require('file!./images/favicon.ico')));
+	server.use(favicon('dist/' + require('file!./images/favicon.ico')));
 	server.use('/docs', express.static(`${distDir}/docs/`));
 
 	/* use Swagger middleware */
 	server.use(
-		middleware.files({ apiPath: false, rawFilesPath: '/' }),
+		middleware.files({apiPath: false, rawFilesPath: '/'}),
 		middleware.metadata(),
 		middleware.parseRequest(),
 		middleware.validateRequest()
@@ -183,20 +184,26 @@ export default async (distDir, {soapUrl, consoleLogging}) => {
 
 	/* request handling */
 	for (let path of Object.keys(swagger.paths)) {
-		let pathObj          = swagger.paths[path];
+		let pathObj = swagger.paths[path];
 		let expressStylePath = path.replace(/{(\w+)}/g, ':$1');
 		for (let method of Object.keys(pathObj).filter(p => !/x-/.test(p))) {
 			server[method](expressStylePath, (req, res, next) => {
 				let mimeType = req.accepts(swagger.produces);
-				try { operations[pathObj[method]['x-operation']]({soap, mimeType, req, res}).catch(next) }
-				catch (err) { next(err) }
+				try {
+					operations[pathObj[method]['x-operation']]({soap, mimeType, req, res}).catch(next)
+				}
+				catch (err) {
+					next(err)
+				}
 			});
 		}
 	}
 
 	/* handling error messages */
 	server.use(errorNormalizer);
-	if (consoleLogging !== false) { server.use(errorLogger) }
+	if (consoleLogging !== false) {
+		server.use(errorLogger)
+	}
 	server.use(errorTransmitter);
 	server.use(doneWithError);
 
