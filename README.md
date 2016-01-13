@@ -9,7 +9,14 @@ of the [Human Genome Variation Society](http://www.hgvs.org).
 Semantic Mutalyzer (organized in this repository) takes the Mutalyzer
 web service and reorganizes the output using [RDF](https://en.wikipedia.org/wiki/Resource_Description_Framework)
 to conform to [semantic web](https://en.wikipedia.org/wiki/Semantic_Web) standards.
-It is written as a [Node.js](https://nodejs.org) script.
+It is written in [Node.js](https://nodejs.org).
+
+## Summary
+
+Semantic Mutalyzer is a web service through which a running Mutalyzer web service can be queried, i.e., it acts as a proxy. The advantages this offers over querying Mutalyzer directly are as follows:
+
+* Semantic Mutalyzer offers a Swagger-based API, so applications that speak Swagger will automatically understand it. For example, the API documentation is generated directly from the Swagger specification, and can be used to run queries right there on the page.
+* In addition to JSON output, Semantic Mutalyzer can also generate RDF output. This output contains semantic annotations that place the output, and its relation to the input, in their proper bio-medical context. For example, when the input consists of a variant description, the output may contain that variant description again, and a link to the containing reference sequence. But the output will also be annotated with the "variant description" concept, the "reference sequence" concept, and the "containing" concept, each as a globally available URI. Any semantic-web-aware application will therefore get the interpretation of the output for free, and can leverage a certain degree of interoperability with other semantic-web-aware services.
 
 
 ## How to Install
