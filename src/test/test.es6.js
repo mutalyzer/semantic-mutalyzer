@@ -88,3 +88,44 @@ describe("/runMutalyzer", () => {
 		.then(({text}) => validateTurtleCode(text)));
 
 });
+
+describe("/info", () => {
+
+	it("responds with valid JSON output when requested", () => api
+		.get('/info')
+		.set('Accept', 'application/json')
+		.query({ })
+		.expect(200)
+		.expect('Content-Type', /application\/json/)
+		.expect(({text}) => { JSON.parse(text) }));
+
+	it("responds with valid turtle output when requested", () => api
+		.get('/info')
+		.set('Accept', 'text/turtle')
+		.query({ })
+		.expect(200)
+		.expect('Content-Type', /text\/turtle/)
+		.then(({text}) => validateTurtleCode(text)));
+
+});
+
+describe("/getTranscriptsAndInfo", () => {
+
+	it("responds with valid JSON output when requested", () => api
+		.get('/getTranscriptsAndInfo')
+		.set('Accept', 'application/json')
+		.query({ genomicReference: 'NC_012920.1', geneName: 'ND1' })
+		.expect(200)
+		.expect('Content-Type', /application\/json/)
+		.expect(({text}) => { JSON.parse(text) }));
+
+	it("responds with valid turtle output when requested", () => api
+		.get('/getTranscriptsAndInfo')
+		.set('Accept', 'text/turtle')
+		.query({ genomicReference: 'NC_012920.1', geneName: 'ND1' })
+		.expect(200)
+		.expect('Content-Type', /text\/turtle/)
+		.then(({text}) => validateTurtleCode(text)));
+
+});
+

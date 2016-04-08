@@ -57,7 +57,11 @@ async function soapOperation(soap, operation, params) {
 
 const ttl = {
 
-	runMutalyzer: Handlebars.compile(require('raw!./templates/runMutalyzer._ttl'))
+	runMutalyzer: Handlebars.compile(require('raw!./templates/runMutalyzer._ttl')),
+
+    info: Handlebars.compile(require('raw!./templates/runMutalyzer._ttl')),
+
+    getTranscriptsAndInfo: Handlebars.compile(require('raw!./templates/runMutalyzer._ttl'))
 
 	// <-- insert templates for other API responses here
 
@@ -90,7 +94,51 @@ const operations = {
 
 		/* send the result */
 		res.status(OK).set('content-type', mimeType).send(runMutalyzerResult);
-	}
+	},
+
+    async info({soap, mimeType, req, res}) {
+        /* extract the expected parameters */
+        const params = {};
+
+        /* call the Mutalyzer SOAP server */
+        let infoResult = await soapOperation(soap, 'info', params);
+
+        /* translate result to Turtle when that mime type was requested */
+        if (mimeType === 'text/turtle') {
+            infoResult = ttl.info(_.cloneDeep(
+                {...params, ...infoResult},
+                (val, key) => {
+                    /* escaping certain characters */
+                    if (_.isString(val)) { return val.replace(/\./g, '\\.') }
+                }
+            ));
+        }
+
+        /* send the result */
+        res.status(OK).set('content-type', mimeType).send(infoResult);
+    },
+
+    async getTranscriptsAndInfo({soap, mimeType, req, res}) {
+        /* extract the expected parameters */
+        const params = _.pick(req.query, ['genomicReference', 'geneName']);
+
+        /* call the Mutalyzer SOAP server */
+        let getTranscriptsAndInfoResult = await soapOperation(soap, 'getTranscriptsAndInfo', params);
+
+        /* translate result to Turtle when that mime type was requested */
+        if (mimeType === 'text/turtle') {
+            getTranscriptsAndInfoResult = ttl.getTranscriptsAndInfo(_.cloneDeep(
+                {...params, ...getTranscriptsAndInfoResult},
+                (val, key) => {
+                    /* escaping certain characters */
+                    if (_.isString(val)) { return val.replace(/\./g, '\\.') }
+                }
+            ));
+        }
+
+        /* send the result */
+        res.status(OK).set('content-type', mimeType).send(getTranscriptsAndInfoResult);
+    }
 
 	// <-- insert implementations for other API calls here
 

@@ -1,5 +1,5 @@
 {
 	"host": "localhost",
 	"port":  8888,
-	"soap-url": "https://mutalyzer.nl/services/?wsdl"
+	"soap-url": "http://127.0.0.1:8081/?wsdl"
 }

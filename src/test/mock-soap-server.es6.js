@@ -1,7 +1,7 @@
 import nock from 'nock';
 
 /* Only enable real network connection to localhost */
-nock.enableNetConnect('127.0.0.1'); // <-- comment out to find actual soap server reponses
+//nock.enableNetConnect('127.0.0.1'); // <-- comment out to find actual soap server reponses
 
 ///* record http(s) traffic */
 //nock.recorder.rec(); // <-- enable this to see all http traffic on the console

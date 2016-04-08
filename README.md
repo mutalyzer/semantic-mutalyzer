@@ -11,6 +11,9 @@ web service and reorganizes the output using [RDF](https://en.wikipedia.org/wiki
 to conform to [semantic web](https://en.wikipedia.org/wiki/Semantic_Web) standards.
 It is written in [Node.js](https://nodejs.org).
 
+
+This publication was supported by the Dutch national program COMMIT.
+
 ## Summary
 
 Semantic Mutalyzer is a web service through which a running Mutalyzer web service can be queried, i.e., it acts as a proxy. The advantages this offers over querying Mutalyzer directly are as follows:
@@ -172,9 +175,7 @@ and this is where cached responses are located (and new ones can be added).
 
 ### How to add a new API operation
 
-As of this writing, only the `runMutalyzer` operation is supported
-(and that only partially). To add a new server operation, the
-following things should be done:
+To add a new server operation, the following things should be done:
 
 1. In `/src/swagger.es6.js`, add a specification of the new operation in the `paths` object.
    If necessary, add related data-type specifications in `definitions`.

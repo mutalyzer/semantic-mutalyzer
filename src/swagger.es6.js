@@ -162,7 +162,9 @@ const definitions = {
 			'gStop':  { type: 'number', required: true },
 			'gStart': { type: 'number', required: true },
 			'cStop':  { type: 'string', required: true },
-			'cStart': { type: 'string', required: true }
+			'cStart': { type: 'string', required: true },
+			'chromStop': { type: 'number' },
+			'chromStart': { type: 'number' }
 		}
 	},
 	Message: {
@@ -171,7 +173,73 @@ const definitions = {
 			'errorcode': { type: 'string', required: true },
 			'message':   { type: 'string' }
 		}
-	}
+	},
+
+
+    GetTranscriptsAndInfoOutput: {
+        type: 'object',
+        properties: {
+            'transcripts': {
+                description: '',
+                type: 'array',
+                items: { $ref: '#/definitions/TranscriptInfo' }
+            }
+        }
+    },
+    TranscriptInfo: {
+        type: 'object',
+        properties: {
+            'linkMethod': { type: 'string', required: true },
+            'exons': { type: 'array', items: { $ref: '#/definitions/ExonInfo' } },
+            'cCDSStop': { type: 'string', required: true },
+            'chromTransStart': { type: 'number' },
+            'locusTag': { type: 'string', required: true },
+            'chromCDSStart': { type: 'number' },
+            'gTransStart': { type: 'number', required: true },
+            'id': { type: 'string', required: true },
+            'cTransEnd': { type: 'string', required: true },
+            'cCDSStart': { type: 'string', required: true },
+            'chromTransEnd': { type: 'number' },
+            'gTransEnd': { type: 'number', required: true },
+            'product': { type: 'string', required: true },
+            'proteinTranscript': { type: 'object', $ref: '#/definitions/ProteinTranscript' },
+            'sortableTransEnd': { type: 'number', required: true },
+            'name': { type: 'string', required: true },
+            'chromCDSStop': { type: 'number' },
+            'gCDSStop': { type: 'number', required: true },
+            'gCDSStart': { type: 'number', required: true },
+            'cTransStart': { type: 'string', required: true }
+        }
+    },
+    ProteinTranscript: {
+        type: 'object',
+        properties: {
+            'name': { type: 'string', required: true },
+            'product': { type: 'string', required: true },
+            'id': { type: 'string', required: true }
+        }
+    },
+
+    InfoOutput: {
+        type: 'object',
+        properties: {
+            'contactEmail': { type: 'string' },
+            'announcement': { type: 'string' },
+            'serverName': { type: 'string' },
+            'nomenclatureVersion': { type: 'string' },
+            'announcementUrl': { type: 'string' },
+            'releaseDate': { type: 'string' },
+            'version': { type: 'string' },
+            'versionParts': { type: 'array', items: { $ref: '#/definitions/VersionPart' } },
+            'nomenclatureVersionParts': { type: 'array', items: { $ref: '#/definitions/VersionPart' } },
+        }
+    },
+    VersionPart: {
+        type: 'object',
+        properties: {
+            'string': { type: 'string' }
+        }
+    }
 
 	// <-- insert other data-type definitions here
 
@@ -216,7 +284,50 @@ const paths = {
 				}
 			}
 		}
-	}
+	},
+
+    '/info': {
+        get: {
+            summary: "Gives some static application information, such as the current running version.",
+            'x-operation': 'info',
+            parameters: [
+            ],
+            responses: {
+                200: {
+                    description: "A lot of information about mutalyzer",
+                    schema: { $ref: '#/definitions/InfoOutput' }
+                }
+            }
+        }
+    },
+
+    '/getTranscriptsAndInfo': {
+        get: {
+            summary: 'Given a genomic reference, return all its transcripts with their transcription/cds start/end sites and exons.',
+            'x-operation': 'getTranscriptsAndInfo',
+            parameters: [
+                {
+                    name: 'genomicReference',
+                    in: 'query',
+                    type: 'string',
+                    description: 'Name of a reference sequence',
+                    required: true
+                },
+                {
+                    name: 'geneName',
+                    in: 'query',
+                    type: 'string',
+                    description: 'Name of gene to restrict returned transcripts to. Default is to return all transcripts',
+                }
+            ],
+            responses: {
+                200: {
+                    description: "A lot of information about the given genomic reference",
+                    schema: { $ref: '#/definitions/GetTranscriptsAndInfoOutput' }
+                }
+            }
+        }
+    }
 
 	// <-- insert other path specifications here
 
