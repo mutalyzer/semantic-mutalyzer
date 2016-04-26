@@ -1,0 +1,42 @@
+##### URL Prefixes #####################################################################################################
+
+@prefix	rdf:	 <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix	rdfs:	 <http://www.w3.org/2000/01/rdf-schema#>       .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rsa:     <http://rdf.biosemantics.org/ontologies/rsa#> .  # Reference Sequence Annotation Ontology
+@prefix refSeq:  <http://www.ncbi.nlm.nih.gov/nuccore/>        .  # ncbi
+@prefix so:  <http://purl.obolibrary.org/obo/>        .  # so ontology
+@prefix identifiers: <http://identifiers.org/refseq/> . # identifiers.org transcript URI
+@prefix ebiTranscript: <http://rdf.ebi.ac.uk/resource/ensembl.transcript/> . # EBI ensemble transcript URI
+@prefix uniProtTranscript: <http://purl.uniprot.org/ensembl/> . # UniProt ensemble transcript URI
+@prefix uniProtRefSeq: <http://purl.uniprot.org/refseq/> . # UniProt protein transcript URI
+
+
+##### Define genomic transcript ##############################################################
+
+<http://www.ncbi.nlm.nih.gov/nuccore/NG_012337.1>    rdf:type	rsa:ReferenceSequence ;
+    rdf:label	"NG_012337.1" ;
+    dcterms:identifiers	"NG_012337.1" .
+
+##### Define transcript and the external DBs connection ##############################################################
+
+<http://www.ncbi.nlm.nih.gov/nuccore/NM_012459.2>	rdf:type	rsa:ReferenceSequence ;
+	rdf:label	"NM_012459.2" ;
+	dcterms:identifiers	"NM_012459.2" ;
+	so:so_associated_with   <http://www.ncbi.nlm.nih.gov/nuccore/NG_012337.1> ;
+	rdfs:seeAlso	<http://identifiers.org/refseq/NM_012459.2> ;
+	rdfs:seeAlso	ebiTranscript:ENST00000541231 ;
+	rdfs:seeAlso	uniProtTranscript:ENST00000541231 ;
+	rdfs:seeAlso	<http://purl.uniprot.org/refseq/NP_036591.2> .
+
+##### Transcript sequence annotation (genomic) ##############################################################
+
+<http://www.ncbi.nlm.nih.gov/nuccore/NM_012459.2>	rsa:hasAnnotation	<https://mutalyzer.nl/refSeq/NM_012459.2/annotation/1> .
+
+<https://mutalyzer.nl/refSeq/NM_012459.2/annotation/1>	rdf:type	rsa:SequenceAnnotation	;
+	rsa:mapsTo	<https://mutalyzer.nl/refSeq/NM_012459.2/annotation/1/region/> .
+
+<https://mutalyzer.nl/refSeq/NM_012459.2/annotation/1/region/>	rdf:type	rsa:Region ;
+	rsa:start	"4952"^^xsd:int ;
+	rsa:end	"2954"^^xsd:int .

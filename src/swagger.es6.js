@@ -346,7 +346,7 @@ export default {
 	},
 	host: `${config.host}:${config.port}`,
 	consumes: ['application/json', 'text/turtle'], //, 'application/ld+json'
-	produces: ['application/json', 'text/turtle'], //, 'application/ld+json'
+	produces: ['text/turtle', 'application/json'], //, 'application/ld+json'
 	definitions,
 	paths
 };
